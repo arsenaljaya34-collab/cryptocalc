@@ -1,0 +1,2990 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#060c18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CryptoCalc">
+<meta name="description" content="Kalkulator crypto lengkap: P&L, Risk, Journal, Portfolio, DCA, Funding">
+<title>CryptoCalc Pro</title>
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" id="apple-icon">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#060c18;--s1:#0d1525;--s2:#131e30;--s3:#192540;
+  --bd:#1a2d45;--bd2:#20364f;
+  --acc:#00e5a0;--acc2:rgba(0,229,160,.12);--acc3:rgba(0,229,160,.22);
+  --pur:#7c6af7;--pur2:rgba(124,106,247,.12);
+  --ora:#ff6b35;
+  --grn:#00e5a0;--red:#ff3d5a;--yel:#ffd740;
+  --txt:#d8e8f8;--sub:#6a90b8;--fnt:#2a4060;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;
+  --card-shadow:0 2px 12px rgba(0,0,0,.3);
+}
+/* LIGHT MODE */
+[data-theme="light"]{
+  --bg:#f0f4f8;--s1:#e2e8f0;--s2:#ffffff;--s3:#f8fafc;
+  --bd:#cbd5e1;--bd2:#94a3b8;
+  --txt:#0f172a;--sub:#475569;--fnt:#e2e8f0;
+  --acc2:rgba(0,180,120,.12);--acc3:rgba(0,180,120,.22);
+  --card-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+[data-theme="light"] body{background:var(--bg)}
+[data-theme="light"] .tb{background:rgba(240,244,248,.97);border-bottom:1px solid var(--bd)}
+[data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] textarea{background:var(--s1);color:var(--txt);border-color:var(--bd)}
+[data-theme="light"] .card{box-shadow:var(--card-shadow)}
+[data-theme="light"] #j-search{background:var(--s1);color:var(--txt)}
+[data-theme="light"] .nb{background:var(--s1);color:var(--sub)}
+[data-theme="light"] .nb.on{background:var(--acc2);color:var(--acc)}
+[data-theme="light"] .news-card{background:var(--s2)}
+[data-theme="light"] .news-title{color:var(--txt)}
+[data-theme="light"] .evc{background:var(--s1)}
+[data-theme="light"] .tr2{background:var(--s1)}
+[data-theme="light"] .pr{background:var(--s1)}
+[data-theme="light"] .rp{background:var(--s1)}
+[data-theme="light"] .info{background:rgba(0,180,120,.08);border-color:rgba(0,180,120,.25)}
+[data-theme="light"] .tag.TW{background:rgba(0,180,120,.15)}
+[data-theme="light"] .tag.TL{background:rgba(255,61,90,.12)}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+.app{max-width:430px;margin:0 auto;padding-bottom:82px}
+
+/* TOPBAR */
+.tb{background:rgba(13,21,37,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:400}
+.logo{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:3px;font-weight:700;display:flex;align-items:center;gap:7px}
+.logo-gem{width:16px;height:16px;background:linear-gradient(135deg,var(--acc),#00b377);border-radius:4px;transform:rotate(45deg);box-shadow:0 0 8px var(--acc3)}
+.rpill{background:var(--s2);border:1px solid var(--bd);border-radius:20px;padding:4px 10px;font-family:var(--mono);font-size:10px;color:var(--acc);display:flex;align-items:center;gap:5px;cursor:pointer;transition:all .2s}
+.rpill:hover{border-color:var(--acc);background:var(--s3)}
+.live{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:lv 2s infinite}
+@keyframes lv{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+
+/* NAV */
+.nav{background:var(--s1);border-bottom:1px solid var(--bd);position:sticky;top:43px;z-index:399;display:flex;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nb{flex:0 0 auto;min-width:52px;padding:8px 6px 6px;border:none;background:none;color:var(--sub);font-family:var(--sans);font-size:9px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:2px;letter-spacing:.3px}
+.nb.on{color:var(--acc);border-bottom-color:var(--acc)}
+.nb .i{font-size:14px}
+
+/* SECTION */
+.sec{display:none;padding:13px 12px 8px}
+.sec.on{display:block}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(0,229,160,.12) 50%,transparent 100%)}
+.ct{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:var(--mono);display:flex;align-items:center;gap:8px}
+.ct::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+/* FIELDS */
+.f{margin-bottom:9px}
+.f label{display:block;font-size:10px;color:var(--sub);margin-bottom:4px;font-family:var(--mono);letter-spacing:.5px}
+.f input,.f select,.f textarea{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:9px 12px;color:var(--txt);font-family:var(--mono);font-size:12px;outline:none;transition:all .15s;-webkit-appearance:none}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc2);background:var(--s3)}
+.f select option{background:var(--s2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.un{position:relative}
+.un input{padding-right:40px}
+.un em{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--fnt);font-family:var(--mono);font-size:10px;font-style:normal;pointer-events:none}
+
+/* LEVER */
+.lw{margin-bottom:9px}
+.lw label{display:block;font-size:10px;color:var(--sub);margin-bottom:5px;font-family:var(--mono)}
+.lr{display:flex;align-items:center;gap:9px}
+.lr input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--bd);border-radius:2px;outline:none}
+.lr input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;background:var(--acc);border-radius:50%;cursor:pointer;box-shadow:0 0 8px var(--acc3)}
+.lnum{font-family:var(--mono);font-size:16px;color:var(--acc);font-weight:700;min-width:38px;text-align:right}
+.lps{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.lpb{padding:3px 9px;border:1px solid var(--bd);background:var(--s2);color:var(--sub);border-radius:6px;font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .15s}
+.lpb:hover,.lpb:active{border-color:var(--acc);color:var(--acc)}
+
+/* DIR */
+.drow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.db{padding:9px;border:1px solid var(--bd);background:var(--s2);color:var(--sub);border-radius:10px;cursor:pointer;font-family:var(--mono);font-size:11px;font-weight:700;transition:all .2s;text-align:center}
+.db.DL{background:rgba(0,229,160,.08);border-color:var(--grn);color:var(--grn)}
+.db.DS{background:rgba(255,61,90,.08);border-color:var(--red);color:var(--red)}
+
+/* RESULT */
+.rp{background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:12px;margin-top:9px}
+.rr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd)}
+.rr:last-child{border:none}
+.rl{color:var(--sub);font-size:11px;font-family:var(--mono)}
+.rv{font-family:var(--mono);font-size:12px;font-weight:600}
+.G{color:var(--grn)}.R{color:var(--red)}.W{color:var(--yel)}.N{color:var(--txt)}.P{color:var(--pur)}
+
+/* BIG */
+.rbig{text-align:center;padding:12px 0 9px}
+.rbig .lbl{font-size:10px;color:var(--sub);font-family:var(--mono);letter-spacing:1.5px;margin-bottom:6px}
+.rbig .amt{font-size:28px;font-weight:700;font-family:var(--mono);line-height:1}
+.rbig .sub{font-size:12px;color:var(--sub);margin-top:4px;font-family:var(--mono)}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,var(--s2),var(--s3));border:1px solid var(--bd2);border-radius:14px;padding:20px 16px;text-align:center;margin-bottom:10px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -20%,var(--acc2),transparent 65%);pointer-events:none}
+.hero-n{font-size:38px;font-weight:700;font-family:var(--mono);line-height:1;margin:10px 0 5px;position:relative}
+.hero-l{font-size:10px;color:var(--sub);font-family:var(--mono);letter-spacing:2px;position:relative}
+.hero-s{font-size:11px;color:var(--sub);font-family:var(--mono);margin-top:4px;position:relative}
+
+/* BUTTONS */
+.cbtn{width:100%;padding:12px;background:linear-gradient(135deg,#00e5a0,#00b377);border:none;border-radius:11px;color:#060c18;font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-top:8px;box-shadow:0 4px 18px rgba(0,229,160,.22);transition:all .15s}
+.cbtn:active{opacity:.85;transform:scale(.99)}
+.sbtn{width:100%;padding:9px;background:transparent;border:1px solid var(--bd);border-radius:10px;color:var(--sub);font-family:var(--mono);font-size:11px;cursor:pointer;margin-top:6px;transition:all .15s}
+.sbtn:hover{border-color:var(--sub);color:var(--txt)}
+.pbtn{padding:5px 12px;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--pur);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s}
+.pbtn:hover{border-color:var(--pur)}
+
+/* QUICK BTNS */
+.qrow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;align-items:center}
+.qs{font-size:10px;color:var(--sub);font-family:var(--mono)}
+.qb{padding:4px 10px;border:1px solid var(--bd);background:var(--s2);color:var(--sub);border-radius:20px;font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .15s}
+.qb.up{border-color:rgba(0,229,160,.25);color:rgba(0,229,160,.8)}
+.qb.dn{border-color:rgba(255,61,90,.25);color:rgba(255,61,90,.8)}
+.qb:active{transform:scale(.95)}
+
+/* INFO */
+.info{background:rgba(124,106,247,.07);border:1px solid rgba(124,106,247,.18);border-radius:9px;padding:9px 12px;font-size:11px;color:#b0a8f8;font-family:var(--mono);margin-bottom:10px;line-height:1.65}
+
+/* STAT GRID */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px}
+.sg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:11px}
+.sc{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px 8px;text-align:center}
+.sc .sl{font-size:9px;color:var(--sub);font-family:var(--mono);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.sc .sv{font-size:14px;font-weight:700;font-family:var(--mono)}
+
+/* CHART */
+.cw{position:relative;width:100%}
+
+/* FILTER */
+.fil{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap}
+.fb{padding:4px 10px;border:1px solid var(--bd);background:var(--s2);color:var(--sub);border-radius:20px;font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .15s}
+.fb.on{border-color:var(--acc);color:var(--acc);background:var(--acc2)}
+
+/* TRADE ROW */
+.tr2{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;transition:border .15s}
+.tr2:hover{border-color:var(--bd2)}
+
+/* TAG */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-family:var(--mono);font-weight:600}
+.TW{background:rgba(0,229,160,.1);color:var(--grn)}
+.TL{background:rgba(255,61,90,.12);color:var(--red)}
+.TM{background:rgba(255,215,64,.1);color:var(--yel)}
+.TH{background:rgba(255,61,90,.15);color:#ff8fa0}
+.TMED{background:rgba(255,215,64,.12);color:var(--yel)}
+.TLO{background:rgba(0,229,160,.1);color:var(--grn)}
+
+/* DCA ROW */
+.dr{display:flex;gap:7px;align-items:flex-end;margin-bottom:7px}
+.dr .f{flex:1;margin:0}
+.dr .xb{padding:8px 10px;background:var(--s2);border:1px solid var(--bd);border-radius:9px;color:var(--red);cursor:pointer;font-size:13px;flex-shrink:0;transition:border .15s}
+.dr .xb:hover{border-color:var(--red)}
+
+/* EVENT */
+.evc{background:var(--s2);border:1px solid var(--bd);border-left:3px solid transparent;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.evc:hover{border-color:var(--bd2)}
+.evc.al{border-left-color:var(--pur)}
+
+/* PORTO */
+.pr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}
+.pr:last-child{border:none}
+
+/* METER */
+.meter{height:6px;border-radius:3px;background:var(--bd);margin:7px 0;overflow:hidden}
+.mfill{height:100%;border-radius:3px;transition:width .4s}
+
+/* MODE PILLS */
+.mp-row{display:flex;background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:3px;gap:3px;margin-bottom:12px}
+.mp{flex:1;padding:6px 4px;border:none;background:none;color:var(--sub);font-family:var(--mono);font-size:9px;cursor:pointer;border-radius:7px;transition:all .2s;text-align:center;line-height:1.4}
+.mp.on{background:var(--acc);color:#060c18;font-weight:700}
+
+/* LADDER */
+.lt{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+.lt th{color:var(--sub);text-align:left;padding:5px 7px;border-bottom:1px solid var(--bd);font-size:10px;letter-spacing:.5px}
+.lt td{padding:5px 7px;border-bottom:1px solid rgba(26,45,69,.45)}
+.lt tr:last-child td{border:none}
+.lt tr:hover td{background:rgba(26,45,69,.5)}
+.lt .base td{background:rgba(0,229,160,.05)}
+
+/* TP/SL BOXES */
+.tpsl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.tpb{background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.18);border-radius:11px;padding:12px;text-align:center}
+.slb{background:rgba(255,61,90,.06);border:1px solid rgba(255,61,90,.18);border-radius:11px;padding:12px;text-align:center}
+.tsl-l{font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:5px;letter-spacing:1px}
+.tsl-v{font-family:var(--mono);font-size:14px;font-weight:700}
+.tsl-s{font-size:10px;font-family:var(--mono);margin-top:3px}
+
+/* SWAP */
+.sw-c{display:flex;justify-content:center;margin:5px 0}
+.sw-b{background:var(--s2);border:1px solid var(--bd);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--acc);font-size:15px;transition:transform .25s}
+.sw-b:active{transform:rotate(180deg)}
+
+/* AI */
+.ald{display:flex;align-items:center;gap:7px;color:var(--sub);font-size:11px;font-family:var(--mono);padding:7px 0}
+.ald .dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--acc);margin:0 2px;animation:dtb .8s infinite}
+.ald .dots span:nth-child(2){animation-delay:.15s}.ald .dots span:nth-child(3){animation-delay:.3s}
+@keyframes dtb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* EMPTY / DEL */
+.empty{color:var(--sub);font-size:11px;font-family:var(--mono);text-align:center;padding:18px 0;opacity:.65}
+.del{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;padding:2px 5px;opacity:.5;transition:opacity .15s}
+.del:hover{opacity:1}
+.sep{height:1px;background:var(--bd);margin:11px 0}
+
+/* TOAST */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--s3);border:1px solid var(--acc);color:var(--acc);padding:9px 18px;border-radius:22px;font-size:11px;font-family:var(--mono);z-index:9999;text-align:center;max-width:340px;box-shadow:0 4px 24px rgba(0,0,0,.5);pointer-events:none;transition:opacity .3s;opacity:0}
+#toast.show{opacity:1}
+
+/* SUMMARY BAR */
+.sumbar{display:flex;gap:6px;margin-bottom:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.sumbar::-webkit-scrollbar{display:none}
+.sumb{flex:0 0 auto;background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;text-align:center;min-width:90px}
+.sumb .sl{font-size:9px;color:var(--sub);font-family:var(--mono);letter-spacing:1px;margin-bottom:3px}
+.sumb .sv{font-size:13px;font-weight:700;font-family:var(--mono)}
+
+/* CHART TABS */
+.chart-tabs{display:flex;gap:5px;margin:12px 0 8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chart-tabs::-webkit-scrollbar{display:none}
+.ctab{flex:0 0 auto;padding:6px 11px;border-radius:8px;font-family:var(--mono);font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:var(--s2);color:var(--sub);transition:all .2s;white-space:nowrap}
+.ctab.on{background:rgba(0,229,160,.12);border-color:rgba(0,229,160,.35);color:var(--acc)}
+.ctab:active{transform:scale(.95)}
+.chart-panel{display:none}
+.chart-panel.active-panel{display:block}
+
+/* EXPORT/IMPORT */
+.io-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.ebtn{padding:9px 6px;border-radius:10px;font-family:var(--mono);font-size:10px;font-weight:700;cursor:pointer;text-align:center;letter-spacing:.5px;transition:all .15s;border:1px solid}
+.ebtn.ex{background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.3);color:var(--grn)}
+.ebtn.im{background:rgba(124,106,247,.08);border-color:rgba(124,106,247,.3);color:var(--pur)}
+.ebtn:active{transform:scale(.97)}
+
+/* PRICE REFRESH */
+.price-bar{display:flex;align-items:center;justify-content:space-between;background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.price-bar .pl{font-size:10px;color:var(--sub);font-family:var(--mono)}
+.price-bar .pr-btn{padding:4px 10px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);border-radius:20px;color:var(--acc);font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.price-bar .pr-btn:active{transform:scale(.95)}
+.spin{display:inline-block;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* EVENT TABS */
+.evtab-panel{display:none}
+.active-evtab{display:block}
+.fpill{padding:4px 10px;border-radius:20px;font-family:var(--mono);font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:var(--s2);color:var(--sub);transition:all .15s;white-space:nowrap}
+.fpill.on{background:rgba(0,229,160,.12);border-color:rgba(0,229,160,.35);color:var(--acc)}
+.fpill:active{transform:scale(.93)}
+
+/* NEWS FEED CARD */
+.news-card{background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:11px 13px;margin-bottom:8px;cursor:pointer;transition:all .2s;display:block;text-decoration:none}
+.news-card:hover{border-color:rgba(0,229,160,.3);background:var(--s3)}
+.news-card:active{transform:scale(.98)}
+.news-src{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:10px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+.news-title{font-size:12px;font-weight:600;color:var(--txt);line-height:1.4;margin-bottom:5px}
+.news-meta{font-size:10px;color:var(--sub);font-family:var(--mono);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.news-tag{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;font-family:var(--mono)}
+.src-coindesk{background:rgba(247,147,26,.15);color:#f7931a}
+.src-cointelegraph{background:rgba(56,173,245,.15);color:#38adf5}
+.src-decrypt{background:rgba(124,106,247,.15);color:#7c6af7}
+.src-theblock{background:rgba(255,107,53,.15);color:#ff6b35}
+.src-bitcoinmagazine{background:rgba(255,215,64,.15);color:#ffd740}
+.src-other{background:rgba(106,144,184,.15);color:#6a90b8}
+
+/* AUTO REFRESH INDICATOR */
+.auto-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);font-family:var(--mono);font-size:9px;color:var(--acc)}
+.cprice{font-size:10px;font-family:var(--mono);margin-top:2px}
+/* LIQ DISTANCE COLOR */
+.rv.liq-danger{color:#ff3d5a;animation:blink .8s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+/* JOURNAL SEARCH */
+#j-search{background:var(--s2);border:1px solid var(--bd);border-radius:9px;padding:8px 34px 8px 12px;width:100%;color:var(--txt);font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
+#j-search:focus{border-color:rgba(0,229,160,.4)}
+.cprice.ok{color:var(--acc)}.cprice.er{color:var(--red)}
+</style>
+
+<div id="toast"></div>
+<div class="app">
+<!-- TOPBAR -->
+<div class="tb">
+  <div class="logo"><div class="logo-gem"></div>CRYPTOCALC PRO <span id="online-dot" title="Online" style="width:5px;height:5px;border-radius:50%;background:#00e5a0;display:inline-block;margin-left:3px;vertical-align:middle"></span></div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <button id="alert-bell" onclick="openAlerts()" title="Price Alerts" style="background:none;border:none;cursor:pointer;font-size:16px;padding:4px;position:relative;line-height:1" aria-label="Price Alerts">
+      🔔<span id="alert-badge" style="display:none;position:absolute;top:0;right:0;width:8px;height:8px;border-radius:50%;background:#ff3d5a;border:1px solid var(--bg)"></span>
+    </button>
+    <button id="theme-btn" onclick="toggleTheme()" title="Ganti tema" style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px;line-height:1" aria-label="Toggle theme">🌙</button>
+    <div class="rpill" onclick="fetchRate()"><div class="live"></div><span id="rl">USDT = Rp 16.320</span></div>
+  </div>
+</div>
+
+<!-- PRICE ALERT MODAL -->
+<div id="alert-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(6,12,24,.85);backdrop-filter:blur(4px)" onclick="if(event.target===this)closeAlerts()">
+  <div style="position:absolute;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;background:var(--s1);border-radius:20px 20px 0 0;padding:20px 16px 32px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-size:16px;font-weight:700;font-family:var(--mono)">🔔 Price Alert</div>
+      <button onclick="closeAlerts()" style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:5px 10px;color:var(--sub);cursor:pointer;font-family:var(--mono);font-size:11px">✕ Tutup</button>
+    </div>
+    <!-- Add alert form -->
+    <div style="background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:13px;margin-bottom:12px">
+      <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:10px;letter-spacing:.5px">TAMBAH ALERT BARU</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f"><label>Coin</label><input type="text" id="al-coin" placeholder="BTC" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+        <div class="f"><label>Kondisi</label>
+          <select id="al-cond">
+            <option value="above">↑ Naik di atas</option>
+            <option value="below">↓ Turun di bawah</option>
+          </select>
+        </div>
+      </div>
+      <div class="f un" style="margin-bottom:10px"><label>Target Harga</label><input type="number" id="al-price" placeholder="70000"/><em>$</em></div>
+      <div class="f" style="margin-bottom:10px"><label>Catatan (opsional)</label><input type="text" id="al-note" placeholder="TP level 1, SL, dll..."/></div>
+      <button class="cbtn" onclick="addAlert()" style="margin-top:0">+ Tambah Alert</button>
+    </div>
+    <!-- Alert list -->
+    <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:8px;letter-spacing:.5px">ALERT AKTIF <span id="al-count" style="color:var(--acc)"></span></div>
+    <div id="al-list"><div class="empty" style="padding:12px 0">Belum ada alert. Tambah di atas.</div></div>
+    <div style="margin-top:12px;font-size:9px;color:var(--sub);font-family:var(--mono);line-height:1.6;text-align:center">
+      Harga dicek setiap 60 detik via Binance API.<br>Pastikan notifikasi browser diizinkan.
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nb on" onclick="go('dash',this)"><span class="i">🏠</span>Dash</button>
+  <button class="nb" onclick="go('pnl',this)"><span class="i">⚡</span>P&L</button>
+  <button class="nb" onclick="go('spot',this)"><span class="i">🪙</span>Spot</button>
+  <button class="nb" onclick="go('pct',this)"><span class="i">📐</span>% Kalk</button>
+  <button class="nb" onclick="go('journal',this)"><span class="i">📓</span>Journal</button>
+  <button class="nb" onclick="go('risk',this)"><span class="i">🛡</span>Risk</button>
+  <button class="nb" onclick="go('dca',this)"><span class="i">🔄</span>DCA</button>
+  <button class="nb" onclick="go('fund',this)"><span class="i">💸</span>Funding</button>
+  <button class="nb" onclick="go('be',this)"><span class="i">🎯</span>B/E</button>
+  <button class="nb" onclick="go('avg',this)"><span class="i">⚖</span>Avg</button>
+  <button class="nb" onclick="go('ev',this)"><span class="i">🔔</span>Event</button>
+  <button class="nb" onclick="go('port',this)"><span class="i">📊</span>Porto</button>
+  <button class="nb" onclick="go('conv',this)"><span class="i">↔</span>Kurs</button>
+</div>
+
+<!-- ═══ 🏠 DASHBOARD ═══ -->
+<div class="sec" id="sec-dash">
+  <!-- Greeting + summary bar -->
+  <div style="padding:4px 0 12px">
+    <div id="dash-greet" style="font-size:18px;font-weight:700;font-family:var(--mono);margin-bottom:4px">Selamat pagi 👋</div>
+    <div style="font-size:11px;color:var(--sub);font-family:var(--mono)" id="dash-date"></div>
+  </div>
+
+  <!-- Portfolio summary card -->
+  <div class="card" style="background:linear-gradient(135deg,var(--s2),var(--s1));border-color:rgba(0,229,160,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:11px;color:var(--sub);font-family:var(--mono);letter-spacing:1px">TOTAL PORTFOLIO</div>
+      <button onclick="go('port',document.querySelectorAll('.nb')[11])" style="font-size:10px;color:var(--acc);background:none;border:none;cursor:pointer;font-family:var(--mono)">Lihat semua →</button>
+    </div>
+    <div id="dash-tv" style="font-size:32px;font-weight:700;font-family:var(--mono);color:var(--txt)">$0</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+      <span id="dash-tpnl" style="font-size:14px;font-family:var(--mono)">$0</span>
+      <span id="dash-tpct" style="font-size:12px;font-family:var(--mono);color:var(--sub)">0%</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px">
+      <div style="text-align:center"><div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:3px">MODAL</div><div id="dash-tc" style="font-size:12px;font-weight:700;font-family:var(--mono)">$0</div></div>
+      <div style="text-align:center"><div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:3px">IDR VALUE</div><div id="dash-idr" style="font-size:12px;font-weight:700;font-family:var(--mono)">Rp 0</div></div>
+      <div style="text-align:center"><div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:3px">ASET</div><div id="dash-ac" style="font-size:12px;font-weight:700;font-family:var(--mono)">0</div></div>
+    </div>
+  </div>
+
+  <!-- Journal summary -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:11px;color:var(--sub);font-family:var(--mono);letter-spacing:1px">JOURNAL RINGKASAN</div>
+      <button onclick="go('journal',document.querySelectorAll('.nb')[3])" style="font-size:10px;color:var(--acc);background:none;border:none;cursor:pointer;font-family:var(--mono)">Detail →</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+      <div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:4px">WIN RATE</div>
+        <div id="dash-wr" style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--grn)">0%</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:4px">TOTAL P&L</div>
+        <div id="dash-jpnl" style="font-size:18px;font-weight:700;font-family:var(--mono)">$0</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:4px">TRADES</div>
+        <div id="dash-tc2" style="font-size:18px;font-weight:700;font-family:var(--mono);color:var(--ora)">0</div>
+      </div>
+    </div>
+    <!-- Mini equity chart -->
+    <div style="height:70px"><canvas id="dash-eq-c"></canvas></div>
+  </div>
+
+  <!-- Live prices widget -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--sub);font-family:var(--mono);letter-spacing:1px">HARGA LIVE</div>
+      <button class="pr-btn" onclick="refreshDashPrices()" id="dash-refresh-btn"><span id="dash-ref-ic">⟳</span></button>
+    </div>
+    <div id="dash-prices"><div class="ald">Memuat... <div class="dots"><span></span><span></span><span></span></div></div></div>
+  </div>
+
+  <!-- Active alerts widget -->
+  <div class="card" id="dash-alerts-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:11px;color:var(--sub);font-family:var(--mono);letter-spacing:1px">PRICE ALERTS AKTIF</div>
+      <button onclick="openAlerts()" style="font-size:10px;color:var(--acc);background:none;border:none;cursor:pointer;font-family:var(--mono)">+ Tambah →</button>
+    </div>
+    <div id="dash-alerts"><div class="empty" style="padding:4px 0;font-size:11px">Belum ada alert aktif.</div></div>
+  </div>
+
+  <!-- Quick actions -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+    <button class="cbtn" style="margin:0;padding:12px 8px;font-size:11px" onclick="go('pnl',document.querySelectorAll('.nb')[2])">⚡ Kalkulator P&L</button>
+    <button class="cbtn" style="margin:0;padding:12px 8px;font-size:11px;background:linear-gradient(135deg,rgba(124,106,247,.25),rgba(124,106,247,.1));border-color:rgba(124,106,247,.4)" onclick="go('spot',document.querySelectorAll('.nb')[3])">🪙 Kalkulator Spot</button>
+    <button class="sbtn" style="margin:0;padding:12px 8px;font-size:11px" onclick="go('journal',document.querySelectorAll('.nb')[4])">📓 Buka Journal</button>
+    <button class="sbtn" style="margin:0;padding:12px 8px;font-size:11px" onclick="go('ev',document.querySelectorAll('.nb')[10])">🔔 Event & Alert</button>
+  </div>
+</div>
+
+<!-- ═══ 🪙 SPOT CALCULATOR ═══ -->
+<div class="sec" id="sec-spot">
+  <div class="card">
+    <div class="ct">🪙 Kalkulator Spot</div>
+    <div class="info">Untuk trading spot (beli/jual langsung tanpa leverage). Hitung P&L, fee, dan break-even.</div>
+    <div class="f"><label>Pair</label><input type="text" id="sp-pair" value="BTC/USDT"/></div>
+    <div class="g2">
+      <div class="f un"><label>Harga Beli</label><input type="number" id="sp-buy" placeholder="65000" oninput="calcSpot()"/><em>$</em></div>
+      <div class="f un"><label>Modal (USDT)</label><input type="number" id="sp-modal" placeholder="500" oninput="calcSpot()"/><em>$</em></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Harga Jual / Target</label><input type="number" id="sp-sell" placeholder="70000" oninput="calcSpot()"/><em>$</em></div>
+      <div class="f un"><label>Fee %</label><input type="number" id="sp-fee" value="0.1" step="0.01" oninput="calcSpot()"/><em>%</em></div>
+    </div>
+    <button class="cbtn" onclick="calcSpot()">🪙 Hitung</button>
+  </div>
+  <div class="card" id="spot-r" style="display:none">
+    <div class="rbig"><div class="lbl">PROFIT / LOSS</div><div class="amt" id="sp-pnl">$0</div></div>
+    <div class="rg">
+      <div class="rr"><span class="rl">Jumlah Koin</span><span class="rv N" id="sp-qty">—</span></div>
+      <div class="rr"><span class="rl">Nilai Beli</span><span class="rv N" id="sp-bval">—</span></div>
+      <div class="rr"><span class="rl">Nilai Jual</span><span class="rv N" id="sp-sval">—</span></div>
+      <div class="rr"><span class="rl">Total Fee</span><span class="rv N" id="sp-fee-tot">—</span></div>
+      <div class="rr"><span class="rl">ROI</span><span class="rv" id="sp-roi">—</span></div>
+      <div class="rr"><span class="rl">Break-even</span><span class="rv W" id="sp-be">—</span></div>
+      <div class="rr"><span class="rl">Nilai IDR</span><span class="rv" id="sp-idr">—</span></div>
+    </div>
+    <button class="sbtn" style="margin-top:10px" onclick="saveSpotJournal()">💾 Simpan ke Journal</button>
+  </div>
+</div>
+
+<!-- ═══ ⚡ P&L ═══ -->
+<div class="sec on" id="sec-pnl">
+  <div class="card">
+    <div class="ct">⚡ Kalkulator P&L Futures</div>
+    <div class="drow">
+      <button class="db DL" id="bL" onclick="setDir('long')">▲ LONG</button>
+      <button class="db" id="bS" onclick="setDir('short')">▼ SHORT</button>
+    </div>
+    <div class="f"><label>Pair</label>
+      <select id="cp"><option>BTC/USDT</option><option>ETH/USDT</option><option>BNB/USDT</option><option>SOL/USDT</option><option>XRP/USDT</option><option>DOGE/USDT</option><option>PEPE/USDT</option><option>WIF/USDT</option><option>CUSTOM</option></select>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Modal (USDT)</label><input type="number" id="cm" placeholder="100" oninput="syncMod('u')"/><em>$</em></div>
+      <div class="f un"><label>Modal (IDR)</label><input type="number" id="cmi" placeholder="0" oninput="syncMod('i')"/><em>IDR</em></div>
+    </div>
+    <div class="lw"><label>Leverage: <span id="llbl" style="color:var(--acc)">10×</span></label>
+      <div class="lr"><input type="range" id="lsl" min="1" max="125" value="10" oninput="setL(this.value)"/><div class="lnum" id="lv">10×</div></div>
+      <div class="lps"><button class="lpb" onclick="setL(1)">1×</button><button class="lpb" onclick="setL(3)">3×</button><button class="lpb" onclick="setL(5)">5×</button><button class="lpb" onclick="setL(10)">10×</button><button class="lpb" onclick="setL(20)">20×</button><button class="lpb" onclick="setL(50)">50×</button><button class="lpb" onclick="setL(100)">100×</button><button class="lpb" onclick="setL(125)">125×</button></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Harga Beli</label><input type="number" id="cb" placeholder="0" oninput="calc()"/><em>$</em></div>
+      <div class="f un"><label>Harga Jual / TP</label><input type="number" id="cj" placeholder="0" oninput="calc()"/><em>$</em></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Fee Maker %</label><input type="number" id="cfm" value="0.02" step="0.01" oninput="calc()"/><em>%</em></div>
+      <div class="f un"><label>Fee Taker %</label><input type="number" id="cft" value="0.06" step="0.01" oninput="calc()"/><em>%</em></div>
+    </div>
+    <div id="pnl-r" style="display:none" class="rp">
+      <div class="rbig"><div class="lbl">HASIL P&L</div><div class="amt" id="rp1">$0</div><div class="sub" id="rp2">0%</div></div>
+      <div class="rr"><span class="rl">Posisi Terbuka</span><span class="rv N" id="rpos">—</span></div>
+      <div class="rr"><span class="rl">Harga Likuidasi</span><span class="rv R" id="rliq">—</span></div>
+      <div class="rr"><span class="rl">P&L (USDT)</span><span class="rv" id="rusd">—</span></div>
+      <div class="rr"><span class="rl">P&L (IDR)</span><span class="rv" id="ridr">—</span></div>
+      <div class="rr"><span class="rl">Total Fee</span><span class="rv N" id="rfee">—</span></div>
+      <div class="rr"><span class="rl">ROE</span><span class="rv" id="rroe">—</span></div>
+      <div class="rr"><span class="rl">Margin Ratio</span><span class="rv W" id="pnl-mr">—</span></div>
+      <div class="rr"><span class="rl">Harga Likuidasi</span><span class="rv R" id="rliq">—</span></div>
+      <div class="rr"><span class="rl">Jarak ke Liq.</span><span class="rv" id="rliq-dist">—</span></div>
+    </div>
+    <button class="cbtn" onclick="calc()">⚡ Hitung P&L</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px">
+      <button class="sbtn" style="margin:0" onclick="saveJournal()">💾 Simpan Journal</button>
+      <button class="sbtn" style="margin:0;background:rgba(124,106,247,.1);border-color:rgba(124,106,247,.3);color:var(--pur)" onclick="shareCard()">📤 Share Card</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">🎯 Quick TP / SL</div>
+    <div class="g2">
+      <div class="f un"><label>Target Profit %</label><input type="number" id="qt" placeholder="5" oninput="calcQ()"/><em>%</em></div>
+      <div class="f un"><label>Max Loss %</label><input type="number" id="qs" placeholder="2" oninput="calcQ()"/><em>%</em></div>
+    </div>
+    <div id="q-r" style="display:none">
+      <div class="tpsl">
+        <div class="tpb"><div class="tsl-l">TAKE PROFIT</div><div class="tsl-v G" id="qtp">—</div><div class="tsl-s G" id="qtpp">—</div><div class="tsl-s" style="color:var(--sub)" id="qtpid">—</div></div>
+        <div class="slb"><div class="tsl-l">STOP LOSS</div><div class="tsl-v R" id="qsl">—</div><div class="tsl-s R" id="qslp">—</div><div class="tsl-s" style="color:var(--sub)" id="qslid">—</div></div>
+      </div>
+      <div class="rp" style="margin-top:8px">
+        <div class="rr"><span class="rl">Risk/Reward Ratio</span><span class="rv N" id="qrr">—</span></div>
+        <div class="rr"><span class="rl">Profit (IDR)</span><span class="rv G" id="qpidr">—</span></div>
+        <div class="rr"><span class="rl">Loss (IDR)</span><span class="rv R" id="qlidr">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 📐 % KALKULATOR ═══ -->
+<div class="sec" id="sec-pct">
+  <div class="mp-row">
+    <button class="mp on" onclick="setMode('chg',this)">📉 Perubahan</button>
+    <button class="mp" onclick="setMode('tgt',this)">🎯 Target</button>
+    <button class="mp" onclick="setMode('rev',this)">🔄 Recovery</button>
+    <button class="mp" onclick="setMode('ldr',this)">📊 Tangga</button>
+  </div>
+
+  <div id="m-chg">
+    <div class="card">
+      <div class="ct">📉 Hitung % Perubahan Harga</div>
+      <div class="g2">
+        <div class="f un"><label>Harga Awal</label><input type="number" id="cha" placeholder="65000" oninput="calcChg()"/><em>$</em></div>
+        <div class="f un"><label>Harga Akhir</label><input type="number" id="chb" placeholder="70000" oninput="calcChg()"/><em>$</em></div>
+      </div>
+      <div class="f un"><label>Modal / Jumlah Investasi (opsional)</label><input type="number" id="chm" placeholder="1000" oninput="calcChg()"/><em>$</em></div>
+      <div class="qrow"><span class="qs">Cepat:</span>
+        <button class="qb up" onclick="qChg(1)">+1%</button><button class="qb up" onclick="qChg(3)">+3%</button><button class="qb up" onclick="qChg(5)">+5%</button><button class="qb up" onclick="qChg(10)">+10%</button><button class="qb up" onclick="qChg(20)">+20%</button>
+        <button class="qb dn" onclick="qChg(-1)">-1%</button><button class="qb dn" onclick="qChg(-5)">-5%</button><button class="qb dn" onclick="qChg(-10)">-10%</button><button class="qb dn" onclick="qChg(-20)">-20%</button>
+      </div>
+      <div id="chg-r" style="display:none">
+        <div class="hero">
+          <div class="hero-l">PERUBAHAN HARGA</div>
+          <div class="hero-n" id="chpct">0%</div>
+          <div class="hero-s" id="chsub">—</div>
+        </div>
+        <div class="rp">
+          <div class="rr"><span class="rl">Harga Awal</span><span class="rv N" id="chra">—</span></div>
+          <div class="rr"><span class="rl">Harga Akhir</span><span class="rv N" id="chrb">—</span></div>
+          <div class="rr"><span class="rl">Selisih Harga</span><span class="rv" id="chdf">—</span></div>
+          <div class="rr"><span class="rl">P&L (USDT)</span><span class="rv" id="chpu">—</span></div>
+          <div class="rr"><span class="rl">P&L (IDR)</span><span class="rv" id="chpi">—</span></div>
+          <div class="rr"><span class="rl">Recovery jika turun</span><span class="rv W" id="chbep">—</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">⚡ Tabel % Sekaligus</div>
+      <div class="g2">
+        <div class="f un"><label>Harga Dasar</label><input type="number" id="mpb" placeholder="65000" oninput="calcMP()"/><em>$</em></div>
+        <div class="f un"><label>Modal (opsional)</label><input type="number" id="mpm" placeholder="1000" oninput="calcMP()"/><em>$</em></div>
+      </div>
+      <div id="mp-r" style="display:none">
+        <table class="lt"><thead><tr><th>%</th><th>Harga ($)</th><th>Selisih</th><th>P&L</th></tr></thead><tbody id="mpb2"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="m-tgt" style="display:none">
+    <div class="card">
+      <div class="ct">🎯 Harga Target dari %</div>
+      <div class="f un"><label>Harga Sekarang</label><input type="number" id="tgp" placeholder="65000" oninput="calcTgt()"/><em>$</em></div>
+      <div class="f un"><label>Perubahan %</label><input type="number" id="tgpct" placeholder="5" step="0.1" oninput="calcTgt()"/><em>%</em></div>
+      <div class="f un"><label>Modal (opsional)</label><input type="number" id="tgm" placeholder="1000" oninput="calcTgt()"/><em>$</em></div>
+      <div class="qrow">
+        <button class="qb up" onclick="setTpct(1)">+1%</button><button class="qb up" onclick="setTpct(2)">+2%</button><button class="qb up" onclick="setTpct(5)">+5%</button><button class="qb up" onclick="setTpct(10)">+10%</button><button class="qb up" onclick="setTpct(25)">+25%</button><button class="qb up" onclick="setTpct(50)">+50%</button><button class="qb up" onclick="setTpct(100)">+100%</button>
+        <button class="qb dn" onclick="setTpct(-5)">-5%</button><button class="qb dn" onclick="setTpct(-10)">-10%</button><button class="qb dn" onclick="setTpct(-20)">-20%</button><button class="qb dn" onclick="setTpct(-50)">-50%</button>
+      </div>
+      <div id="tgt-r" style="display:none">
+        <div class="hero">
+          <div class="hero-l">HARGA TARGET</div>
+          <div class="hero-n" id="tgpr">$0</div>
+          <div class="hero-s" id="tgsb">—</div>
+        </div>
+        <div class="rp">
+          <div class="rr"><span class="rl">Selisih</span><span class="rv" id="tgdf">—</span></div>
+          <div class="rr"><span class="rl">P&L (USDT)</span><span class="rv" id="tgpu">—</span></div>
+          <div class="rr"><span class="rl">P&L (IDR)</span><span class="rv" id="tgpi">—</span></div>
+          <div class="rr"><span class="rl">Target dalam IDR</span><span class="rv N" id="tgid">—</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">📋 Skenario TP &amp; SL Sekaligus</div>
+      <div class="g2">
+        <div class="f un"><label>Harga Entry</label><input type="number" id="sce" placeholder="65000" oninput="calcSc()"/><em>$</em></div>
+        <div class="f un"><label>Modal</label><input type="number" id="scm" placeholder="1000" oninput="calcSc()"/><em>$</em></div>
+      </div>
+      <div class="g2">
+        <div class="f un"><label>TP %</label><input type="number" id="sctp" placeholder="10" oninput="calcSc()"/><em>%</em></div>
+        <div class="f un"><label>SL %</label><input type="number" id="scsl" placeholder="5" oninput="calcSc()"/><em>%</em></div>
+      </div>
+      <div id="sc-r" style="display:none">
+        <div class="tpsl">
+          <div class="tpb"><div class="tsl-l">TAKE PROFIT</div><div class="tsl-v G" id="sctpp">—</div><div class="tsl-s G" id="sctppl">—</div><div class="tsl-s" style="color:var(--sub)" id="sctpid">—</div></div>
+          <div class="slb"><div class="tsl-l">STOP LOSS</div><div class="tsl-v R" id="scslp">—</div><div class="tsl-s R" id="scslpl">—</div><div class="tsl-s" style="color:var(--sub)" id="scslid">—</div></div>
+        </div>
+        <div class="rp" style="margin-top:8px">
+          <div class="rr"><span class="rl">Risk/Reward</span><span class="rv N" id="scrr">—</span></div>
+          <div class="rr"><span class="rl">Max Profit (IDR)</span><span class="rv G" id="scmpidr">—</span></div>
+          <div class="rr"><span class="rl">Max Loss (IDR)</span><span class="rv R" id="scmlidr">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="m-rev" style="display:none">
+    <div class="card">
+      <div class="ct">🔄 Recovery Calculator</div>
+      <div class="info">💡 Matematika krusial: turun 50% butuh naik 100% untuk kembali ke modal. Jangan pernah lupa ini!</div>
+      <div class="f un"><label>Harga Beli / Modal Awal</label><input type="number" id="rvb" placeholder="65000" oninput="calcRv()"/><em>$</em></div>
+      <div class="f un"><label>Harga Sekarang</label><input type="number" id="rvn" placeholder="55000" oninput="calcRv()"/><em>$</em></div>
+      <div class="f un"><label>Modal Investasi (opsional)</label><input type="number" id="rvm" placeholder="1000" oninput="calcRv()"/><em>$</em></div>
+      <div id="rv-r" style="display:none">
+        <div class="hero">
+          <div class="hero-l">HARUS NAIK</div>
+          <div class="hero-n G" id="rvneed">0%</div>
+          <div class="hero-s" id="rvsub">untuk kembali ke modal</div>
+        </div>
+        <div class="rp">
+          <div class="rr"><span class="rl">Sudah turun/naik</span><span class="rv" id="rvdrop">—</span></div>
+          <div class="rr"><span class="rl">Kerugian (USDT)</span><span class="rv" id="rvlu">—</span></div>
+          <div class="rr"><span class="rl">Kerugian (IDR)</span><span class="rv" id="rvli">—</span></div>
+          <div class="rr"><span class="rl">Harga BEP</span><span class="rv W" id="rvbep">—</span></div>
+          <div class="rr"><span class="rl">BEP dalam IDR</span><span class="rv N" id="rvbid">—</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">📋 Tabel Recovery Wajib Tahu</div>
+      <table class="lt"><thead><tr><th>Turun</th><th>Perlu Naik</th><th>Contoh ($10K)</th></tr></thead><tbody>
+        <tr><td class="R">-5%</td><td class="G">+5.26%</td><td style="color:var(--sub)">$9.500 → $10.000</td></tr>
+        <tr><td class="R">-10%</td><td class="G">+11.11%</td><td style="color:var(--sub)">$9.000 → $10.000</td></tr>
+        <tr><td class="R">-20%</td><td class="G">+25.00%</td><td style="color:var(--sub)">$8.000 → $10.000</td></tr>
+        <tr><td class="R">-30%</td><td class="W">+42.86%</td><td style="color:var(--sub)">$7.000 → $10.000</td></tr>
+        <tr><td class="R">-40%</td><td class="W">+66.67%</td><td style="color:var(--sub)">$6.000 → $10.000</td></tr>
+        <tr><td class="R">-50%</td><td class="R">+100.00%</td><td style="color:var(--sub)">$5.000 → $10.000</td></tr>
+        <tr><td class="R">-70%</td><td class="R">+233.33%</td><td style="color:var(--sub)">$3.000 → $10.000</td></tr>
+        <tr><td class="R">-90%</td><td class="R">+900.00%</td><td style="color:var(--sub)">$1.000 → $10.000</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <div id="m-ldr" style="display:none">
+    <div class="card">
+      <div class="ct">📊 Tangga Level Harga</div>
+      <div class="g2">
+        <div class="f un"><label>Harga Dasar</label><input type="number" id="ldb" placeholder="65000" oninput="calcLdr()"/><em>$</em></div>
+        <div class="f un"><label>Modal (opsional)</label><input type="number" id="ldm" placeholder="1000" oninput="calcLdr()"/><em>$</em></div>
+      </div>
+      <div class="g2">
+        <div class="f un"><label>Step % per Level</label><input type="number" id="lds" value="5" oninput="calcLdr()"/><em>%</em></div>
+        <div class="f"><label>Jumlah Level (tiap sisi)</label><input type="number" id="ldl" value="6" min="1" max="15" oninput="calcLdr()"/></div>
+      </div>
+      <div id="ldr-r" style="display:none">
+        <table class="lt"><thead><tr><th>Level</th><th>Harga ($)</th><th>IDR</th><th>P&L</th></tr></thead><tbody id="ldr-b"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 📓 JOURNAL ═══ -->
+<div class="sec" id="sec-journal">
+  <div class="card">
+    <div class="ct">➕ Input Trade</div>
+    <div class="g2">
+      <div class="f"><label>Pair</label><input type="text" id="jp" placeholder="BTC/USDT"/></div>
+      <div class="f"><label>Arah</label><select id="jd"><option value="long">▲ LONG</option><option value="short">▼ SHORT</option></select></div>
+    </div>
+    <div class="g3">
+      <div class="f un"><label>Modal ($)</label><input type="number" id="jm" placeholder="100"/><em>$</em></div>
+      <div class="f"><label>Leverage</label><input type="number" id="jl" value="10" min="1"/></div>
+      <div class="f"><label>Hasil</label><select id="jo"><option value="win">✅ Win</option><option value="loss">❌ Loss</option><option value="be">➖ B/E</option></select></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Harga Beli</label><input type="number" id="jb" placeholder="0"/><em>$</em></div>
+      <div class="f un"><label>Harga Jual</label><input type="number" id="jj" placeholder="0"/><em>$</em></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Fee Maker %</label><input type="number" id="jfm" value="0.02" step="0.01"/><em>%</em></div>
+      <div class="f un"><label>Fee Taker %</label><input type="number" id="jft" value="0.06" step="0.01"/><em>%</em></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Tanggal</label><input type="date" id="jdt"/></div>
+      <div class="f"><label>Emosi saat trade</label><select id="jem"><option value="">— pilih —</option><option value="😌">😌 Tenang</option><option value="😤">😤 FOMO</option><option value="😰">😰 Takut</option><option value="🤑">🤑 Greedy</option><option value="😤">😤 Revenge</option></select></div>
+    </div>
+    <div class="f"><label>Catatan / Alasan Masuk</label><textarea id="jn" placeholder="Setup, kondisi market, notes..." style="height:52px;resize:none"></textarea></div>
+    <button class="cbtn" onclick="addTrade()">💾 Simpan Trade</button>
+  </div>
+  <div class="card">
+    <div class="ct">📊 Statistik</div>
+    <div class="sg">
+      <div class="sc"><div class="sl">WIN RATE</div><div class="sv G" id="jwr">0%</div></div>
+      <div class="sc"><div class="sl">TOTAL P&L</div><div class="sv" id="jtpnl">$0</div></div>
+      <div class="sc"><div class="sl">AVG PROFIT</div><div class="sv G" id="jap">$0</div></div>
+      <div class="sc"><div class="sl">AVG LOSS</div><div class="sv R" id="jal">$0</div></div>
+      <div class="sc"><div class="sl">TOTAL TRADE</div><div class="sv" style="color:var(--ora)" id="jtc">0</div></div>
+      <div class="sc"><div class="sl">PROFIT FACTOR</div><div class="sv" id="jpf">0</div></div>
+      <div class="sc"><div class="sl">MAX DRAWDOWN</div><div class="sv R" id="jmdd">$0</div></div>
+      <div class="sc"><div class="sl">BEST TRADE</div><div class="sv G" id="jbest">$0</div></div>
+      <div class="sc"><div class="sl">WORST TRADE</div><div class="sv R" id="jworst">$0</div></div>
+    </div>
+    <div class="chart-tabs">
+      <button class="ctab on" onclick="switchChart('eq',this)">📈 Equity</button>
+      <button class="ctab" onclick="switchChart('dd',this)">📉 Drawdown</button>
+      <button class="ctab" onclick="switchChart('monthly',this)">📅 Bulanan</button>
+      <button class="ctab" onclick="switchChart('heatmap',this)">🗓 Heatmap</button>
+    </div>
+    <div id="chart-eq" class="chart-panel active-panel">
+      <div class="cw" style="height:140px"><canvas id="eq-c"></canvas></div>
+    </div>
+    <div id="chart-dd" class="chart-panel">
+      <div class="cw" style="height:140px"><canvas id="dd-c"></canvas></div>
+    </div>
+    <div id="chart-monthly" class="chart-panel">
+      <div class="cw" style="height:170px"><canvas id="monthly-c"></canvas></div>
+    </div>
+    <div id="chart-heatmap" class="chart-panel">
+      <div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:6px;text-align:center" id="heatmap-label">Win/Loss per hari (6 bulan terakhir)</div>
+      <div id="heatmap-grid" style="overflow-x:auto"></div>
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;font-size:9px;color:var(--sub);font-family:var(--mono)">
+        <span style="width:10px;height:10px;border-radius:2px;background:#1a2d45;display:inline-block"></span>Kosong
+        <span style="width:10px;height:10px;border-radius:2px;background:#00e5a0;display:inline-block"></span>Win
+        <span style="width:10px;height:10px;border-radius:2px;background:#ff3d5a;display:inline-block"></span>Loss
+        <span style="width:10px;height:10px;border-radius:2px;background:#ffd740;display:inline-block"></span>Mix
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="ct" style="margin-bottom:0">📋 Riwayat</div>
+      <div style="font-size:10px;color:var(--sub);font-family:var(--mono)" id="j-count">0 trade</div>
+    </div>
+    <!-- Search bar -->
+    <div style="position:relative;margin-bottom:8px">
+      <input type="text" id="j-search" placeholder="🔍 Cari pair... (BTC, ETH, SOL)" oninput="rendJ()" style="width:100%;padding-right:32px"/>
+      <button onclick="G('j-search').value='';rendJ()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--sub);cursor:pointer;font-size:14px;padding:0">✕</button>
+    </div>
+    <!-- Outcome filter -->
+    <div class="fil" style="margin-bottom:6px">
+      <button class="fb on" onclick="filt('all',this)">Semua</button>
+      <button class="fb" onclick="filt('win',this)">✅ Win</button>
+      <button class="fb" onclick="filt('loss',this)">❌ Loss</button>
+      <button class="fb" onclick="filt('long',this)">▲ Long</button>
+      <button class="fb" onclick="filt('short',this)">▼ Short</button>
+      <button class="fb" onclick="filt('be',this)">➖ B/E</button>
+    </div>
+    <div id="j-list"><div class="empty">Belum ada trade. Tambah di atas atau dari kalkulator P&L.</div></div>
+    <div class="io-row">
+      <button class="ebtn ex" onclick="exportData('journal')">⬇ Export Journal</button>
+      <button class="ebtn im" onclick="importData('journal')">⬆ Import Journal</button>
+    </div>
+    <button class="sbtn" onclick="if(confirm('Hapus semua trade? Data tidak bisa dikembalikan!')){trades=[];savT();rendJ();rendEQ();toast('🗑 Semua trade dihapus.')}">🗑 Hapus Semua</button>
+  </div>
+</div>
+
+<!-- ═══ 🛡 RISK ═══ -->
+<div class="sec" id="sec-risk">
+  <div class="card">
+    <div class="ct">🛡 Position Sizing</div>
+    <div class="info">💡 Disiplin risiko 1–2% per trade = akun selamat dari 10× loss berturut. Ini pondasi trading.</div>
+    <div class="g2">
+      <div class="f un"><label>Total Modal</label><input type="number" id="rmm" placeholder="10000" oninput="calcRisk()"/><em>$</em></div>
+      <div class="f un"><label>Risiko / Trade</label><input type="number" id="rmr" value="1" step="0.1" oninput="calcRisk()"/><em>%</em></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Harga Entry</label><input type="number" id="rme" placeholder="0" oninput="calcRisk()"/><em>$</em></div>
+      <div class="f un"><label>Stop Loss</label><input type="number" id="rmsl" placeholder="0" oninput="calcRisk()"/><em>$</em></div>
+    </div>
+    <div class="lw"><label>Leverage: <span id="rmll" style="color:var(--acc)">10×</span></label>
+      <div class="lr"><input type="range" id="rmlev" min="1" max="125" value="10" oninput="rmL(this.value)"/><div class="lnum" id="rmlv">10×</div></div>
+    </div>
+    <div id="risk-r" style="display:none" class="rp">
+      <div class="rbig"><div class="lbl">MAX RISIKO PER TRADE</div><div class="amt N" id="rmmr">$0</div></div>
+      <div class="rr"><span class="rl">Posisi Ideal (USDT)</span><span class="rv N" id="rmpos">—</span></div>
+      <div class="rr"><span class="rl">Qty Unit</span><span class="rv N" id="rmqty">—</span></div>
+      <div class="rr"><span class="rl">SL dari Entry</span><span class="rv R" id="rmslp">—</span></div>
+      <div class="rr"><span class="rl">Kelly Criterion</span><span class="rv W" id="rmkel">—</span></div>
+      <div class="rr"><span class="rl">Modal Aman Tersisa</span><span class="rv G" id="rmsaf">—</span></div>
+      <div class="rl" style="display:block;margin-top:8px;font-size:10px">LEVEL RISIKO</div>
+      <div class="meter"><div class="mfill" id="rmmet" style="width:0%"></div></div>
+      <div class="rv N" id="rmlvl" style="font-size:11px;text-align:right;margin-top:2px">—</div>
+    </div>
+    <button class="cbtn" onclick="calcRisk()">🛡 Hitung Risk</button>
+  </div>
+  <div class="card">
+    <div class="ct">💀 Drawdown Simulator</div>
+    <div class="g2">
+      <div class="f un"><label>Modal Awal</label><input type="number" id="ddm" placeholder="10000" oninput="calcDD()"/><em>$</em></div>
+      <div class="f un"><label>Risiko / Trade</label><input type="number" id="ddr" value="2" step="0.1" oninput="calcDD()"/><em>%</em></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Loss Berturut-turut</label><input type="number" id="dds" value="5" oninput="calcDD()"/></div>
+      <div class="f un"><label>Win Rate</label><input type="number" id="ddw" value="50" oninput="calcDD()"/><em>%</em></div>
+    </div>
+    <div id="dd-r" style="display:none" class="rp">
+      <div class="rr"><span class="rl">Modal setelah streak</span><span class="rv R" id="ddaf">—</span></div>
+      <div class="rr"><span class="rl">Total Drawdown</span><span class="rv R" id="dddd">—</span></div>
+      <div class="rr"><span class="rl">% Modal Hilang</span><span class="rv R" id="ddpct">—</span></div>
+      <div class="rr"><span class="rl">Recovery dibutuhkan</span><span class="rv W" id="ddrec">—</span></div>
+      <div class="rr"><span class="rl">Modal IDR setelah streak</span><span class="rv R" id="ddidr">—</span></div>
+    </div>
+    <button class="cbtn" onclick="calcDD()">💀 Simulasikan</button>
+  </div>
+</div>
+
+<!-- ═══ 🔄 DCA ═══ -->
+<div class="sec" id="sec-dca">
+  <div class="card">
+    <div class="ct">🔄 DCA Calculator</div>
+    <div class="info">Masukkan tiap order beli. Hitung rata-rata harga entry dan P&L posisi otomatis.</div>
+    <div id="dca-e">
+      <div class="dr"><div class="f un"><label>Harga Beli</label><input type="number" class="dp" placeholder="60000" oninput="calcDCA()"/><em>$</em></div><div class="f un"><label>Modal ($)</label><input type="number" class="da" placeholder="100" oninput="calcDCA()"/><em>$</em></div><button class="xb" onclick="xDCA(this)">✕</button></div>
+      <div class="dr"><div class="f un"><label>Harga Beli</label><input type="number" class="dp" placeholder="58000" oninput="calcDCA()"/><em>$</em></div><div class="f un"><label>Modal ($)</label><input type="number" class="da" placeholder="200" oninput="calcDCA()"/><em>$</em></div><button class="xb" onclick="xDCA(this)">✕</button></div>
+    </div>
+    <button class="sbtn" onclick="addDCA()" style="margin-bottom:8px">+ Tambah Order</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px">
+      <div class="f un" style="margin:0"><label>Harga Sekarang</label><input type="number" id="dcan" placeholder="62000" oninput="calcDCA()"/><em>$</em></div>
+      <div class="f un" style="margin:0"><label>Fee Maker %</label><input type="number" id="dca-fm" value="0.1" step="0.01" oninput="calcDCA()"/><em>%</em></div>
+      <div class="f un" style="margin:0"><label>Fee Taker %</label><input type="number" id="dca-ft" value="0.1" step="0.01" oninput="calcDCA()"/><em>%</em></div>
+    </div>
+    <div id="dca-r" style="display:none" class="rp">
+      <div class="rbig"><div class="lbl">AVG ENTRY PRICE</div><div class="amt N" id="dcaavg">$0</div></div>
+      <div class="rr"><span class="rl">Total Modal</span><span class="rv N" id="dcatm">—</span></div>
+      <div class="rr"><span class="rl">Total Koin</span><span class="rv N" id="dcatq">—</span></div>
+      <div class="rr"><span class="rl">Nilai Sekarang</span><span class="rv N" id="dcanv">—</span></div>
+      <div class="rr"><span class="rl">Unrealized P&L (USDT)</span><span class="rv" id="dcapu">—</span></div>
+      <div class="rr"><span class="rl">Unrealized P&L (IDR)</span><span class="rv" id="dcapi">—</span></div>
+      <div class="rr"><span class="rl">Return %</span><span class="rv" id="dcapct">—</span></div>
+      <div class="rr"><span class="rl">Break-even Price</span><span class="rv W" id="dcabe">—</span></div>
+      <div class="rr"><span class="rl">Total Fee</span><span class="rv N" id="dca-fee-info" style="font-size:10px">—</span></div>
+    </div>
+    <button class="cbtn" onclick="calcDCA()">🔄 Hitung DCA</button>
+  </div>
+  <div class="card"><div class="ct">📊 Distribusi Order</div><div class="cw" style="height:155px"><canvas id="dca-c"></canvas></div></div>
+</div>
+
+<!-- ═══ 💸 FUNDING ═══ -->
+<div class="sec" id="sec-fund">
+  <div class="card">
+    <div class="ct">💸 Funding Rate Calculator</div>
+    <div class="info">Funding dibayar/diterima tiap 8 jam. Long membayar jika rate positif. Bisa gerus profit besar di hold panjang!</div>
+    <div class="g2">
+      <div class="f un"><label>Funding Rate / 8j</label><input type="number" id="frr" value="0.01" step="0.001" oninput="calcFund()"/><em>%</em></div>
+      <div class="f"><label>Interval Funding</label><select id="fri" onchange="calcFund()"><option value="8">Setiap 8 Jam</option><option value="4">Setiap 4 Jam</option><option value="1">Setiap 1 Jam</option></select></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Ukuran Posisi</label><input type="number" id="frp" placeholder="1000" oninput="calcFund()"/><em>$</em></div>
+      <div class="f"><label>Leverage</label><input type="number" id="frl" value="10" oninput="calcFund()"/></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Hold (hari)</label><input type="number" id="frd" value="7" oninput="calcFund()"/></div>
+      <div class="f"><label>Arah Posisi</label><select id="frdir" onchange="calcFund()"><option value="long">LONG</option><option value="short">SHORT</option></select></div>
+    </div>
+    <div class="f un"><label>Harga Entry (opsional, untuk B/E price)</label><input type="number" id="frent" placeholder="Kosongkan jika tidak perlu" oninput="calcFund()"/><em>$</em></div>
+    <div id="fund-r" style="display:none" class="rp">
+      <div class="rbig"><div class="lbl">TOTAL BIAYA FUNDING</div><div class="amt" id="frtot">$0</div></div>
+      <div class="rr"><span class="rl">Per 8 Jam</span><span class="rv" id="frp8">—</span></div>
+      <div class="rr"><span class="rl">Per Hari</span><span class="rv" id="frpd">—</span></div>
+      <div class="rr"><span class="rl">Per Minggu</span><span class="rv" id="frpw">—</span></div>
+      <div class="rr"><span class="rl">Status</span><span class="rv" id="frst">—</span></div>
+      <div class="rr"><span class="rl">Total dalam IDR</span><span class="rv" id="frid">—</span></div>
+      <div class="rr"><span class="rl">B/E dengan Funding</span><span class="rv W" id="frbe">—</span></div>
+    </div>
+    <button class="cbtn" onclick="calcFund()">💸 Hitung Funding</button>
+  </div>
+  <div class="card"><div class="ct">📊 Akumulasi Funding (Harian)</div><div class="cw" style="height:135px"><canvas id="fr-c"></canvas></div></div>
+</div>
+
+<!-- ═══ 🎯 BREAK-EVEN ═══ -->
+<div class="sec" id="sec-be">
+  <div class="card">
+    <div class="ct">🎯 Break-even Calculator</div>
+    <div class="info">Harga tepat saat posisi mulai untung, setelah fee buka + tutup + funding + slippage diperhitungkan.</div>
+    <div class="drow">
+      <button class="db DL" id="beL" onclick="setBED('long')">▲ LONG</button>
+      <button class="db" id="beS" onclick="setBED('short')">▼ SHORT</button>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Harga Entry</label><input type="number" id="bee" placeholder="65000" oninput="calcBE()"/><em>$</em></div>
+      <div class="f"><label>Leverage</label><input type="number" id="bel" value="10" oninput="calcBE()"/></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Fee Maker %</label><input type="number" id="befm" value="0.02" step="0.01" oninput="calcBE()"/><em>%</em></div>
+      <div class="f un"><label>Fee Taker %</label><input type="number" id="beft" value="0.06" step="0.01" oninput="calcBE()"/><em>%</em></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Funding Rate / 8j</label><input type="number" id="befr" value="0.01" step="0.001" oninput="calcBE()"/><em>%</em></div>
+      <div class="f"><label>Hold (berapa 8-jam)</label><input type="number" id="beper" value="3" oninput="calcBE()"/></div>
+    </div>
+    <div class="f un"><label>Slippage %</label><input type="number" id="besl" value="0.05" step="0.01" oninput="calcBE()"/><em>%</em></div>
+    <div id="be-r" style="display:none" class="rp">
+      <div class="rbig"><div class="lbl">BREAK-EVEN PRICE</div><div class="amt W" id="bep">$0</div><div class="sub" id="besub">—</div></div>
+      <div class="rr"><span class="rl">% Gerak Dibutuhkan</span><span class="rv W" id="bepct">—</span></div>
+      <div class="rr"><span class="rl">Total Fee (buka+tutup)</span><span class="rv R" id="befee">—</span></div>
+      <div class="rr"><span class="rl">Biaya Funding</span><span class="rv R" id="befund">—</span></div>
+      <div class="rr"><span class="rl">Total Semua Biaya</span><span class="rv R" id="becost">—</span></div>
+      <div class="rr"><span class="rl">B/E dalam IDR</span><span class="rv N" id="beidr">—</span></div>
+    </div>
+    <button class="cbtn" onclick="calcBE()">🎯 Hitung Break-even</button>
+  </div>
+</div>
+
+<!-- ═══ ⚖ AVG ═══ -->
+<div class="sec" id="sec-avg">
+  <div class="card">
+    <div class="ct">⚖ Multi-entry Averaging</div>
+    <div class="info">Beli di beberapa titik (average down/up). Hitung rata-rata entry dan total posisi otomatis.</div>
+    <div id="avg-e">
+      <div class="dr"><div class="f un"><label>Harga Entry</label><input type="number" class="avp" placeholder="65000" oninput="calcAVG()"/><em>$</em></div><div class="f un"><label>Modal ($)</label><input type="number" class="ava" placeholder="200" oninput="calcAVG()"/><em>$</em></div><button class="xb" onclick="xAVG(this)">✕</button></div>
+      <div class="dr"><div class="f un"><label>Harga Entry</label><input type="number" class="avp" placeholder="63000" oninput="calcAVG()"/><em>$</em></div><div class="f un"><label>Modal ($)</label><input type="number" class="ava" placeholder="300" oninput="calcAVG()"/><em>$</em></div><button class="xb" onclick="xAVG(this)">✕</button></div>
+    </div>
+    <button class="sbtn" onclick="addAVG()" style="margin-bottom:8px">+ Tambah Entry</button>
+    <div class="g2">
+      <div class="f un"><label>Harga Sekarang</label><input type="number" id="avgn" placeholder="64000" oninput="calcAVG()"/><em>$</em></div>
+      <div class="f"><label>Leverage</label><input type="number" id="avgl" value="1" oninput="calcAVG()"/></div>
+    </div>
+    <div id="avg-r" style="display:none" class="rp">
+      <div class="rbig"><div class="lbl">RATA-RATA ENTRY</div><div class="amt N" id="avgavg">$0</div></div>
+      <div class="rr"><span class="rl">Total Posisi</span><span class="rv N" id="avgtot">—</span></div>
+      <div class="rr"><span class="rl">Total Koin</span><span class="rv N" id="avgcoins">—</span></div>
+      <div class="rr"><span class="rl">Nilai Sekarang</span><span class="rv N" id="avgval">—</span></div>
+      <div class="rr"><span class="rl">Unrealized P&L (USDT)</span><span class="rv" id="avgpnl">—</span></div>
+      <div class="rr"><span class="rl">Unrealized P&L (IDR)</span><span class="rv" id="avgidr">—</span></div>
+      <div class="rr"><span class="rl">% Perubahan dari Avg</span><span class="rv" id="avgchg">—</span></div>
+    </div>
+    <button class="cbtn" onclick="calcAVG()">⚖ Hitung Average</button>
+  </div>
+  <div class="card"><div class="ct">📊 Distribusi Entry</div><div class="cw" style="height:155px"><canvas id="avg-c"></canvas></div></div>
+</div>
+
+<!-- ═══ 🔔 EVENT ═══ -->
+<div class="sec" id="sec-ev">
+  <div class="info">⚡ Alarm aktif sebagai notifikasi browser. Izinkan notifikasi saat diminta browser.</div>
+
+  <!-- TAB NAVIGATOR -->
+  <div class="chart-tabs" style="margin-bottom:10px">
+    <button class="ctab on" onclick="evTab('feed',this)">📡 Live Feed</button>
+    <button class="ctab" onclick="evTab('ai',this)">🤖 AI Search</button>
+    <button class="ctab" onclick="evTab('manual',this)">✏️ Manual</button>
+    <button class="ctab" onclick="evTab('saved',this)">🔔 Tersimpan</button>
+  </div>
+
+  <!-- TAB: LIVE FEED -->
+  <div id="evtab-feed" class="evtab-panel active-evtab">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="ct" style="margin-bottom:0">📡 Live News Feed</div>
+        <button class="pr-btn" onclick="fetchAllFeeds(true)" id="feed-refresh-btn">
+          <span id="feed-refresh-ic">⟳</span> Refresh
+        </button>
+      </div>
+      <!-- Source filter pills -->
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px" id="feed-filters">
+        <button class="fpill on" onclick="filterFeed('all',this)">Semua</button>
+        <button class="fpill" onclick="filterFeed('coindesk',this)">CoinDesk</button>
+        <button class="fpill" onclick="filterFeed('cointelegraph',this)">CoinTelegraph</button>
+        <button class="fpill" onclick="filterFeed('decrypt',this)">Decrypt</button>
+        <button class="fpill" onclick="filterFeed('theblock',this)">The Block</button>
+        <button class="fpill" onclick="filterFeed('bitcoinmagazine',this)">Bitcoin Mag</button>
+      </div>
+      <div style="font-size:9px;color:var(--sub);font-family:var(--mono);margin-bottom:8px" id="feed-status">Memuat berita terbaru...</div>
+      <div id="feed-list"><div class="ald">📡 Mengambil feed... <div class="dots"><span></span><span></span><span></span></div></div></div>
+    </div>
+  </div>
+
+  <!-- TAB: AI SEARCH -->
+  <div id="evtab-ai" class="evtab-panel">
+    <div class="card">
+      <div class="ct">🤖 AI Event Search</div>
+      <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:10px;line-height:1.6">
+        Claude AI mencari event langsung dari web — FOMC, CPI, NFP, halving, token unlock, listing, dll. Data real-time dari sumber terpercaya.
+      </div>
+      <!-- Quick presets -->
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="fpill" onclick="quickSearch('FOMC Fed rate decision 2025')">FOMC</button>
+        <button class="fpill" onclick="quickSearch('CPI NFP economic calendar this week')">CPI/NFP</button>
+        <button class="fpill" onclick="quickSearch('Bitcoin halving crypto events')">Halving</button>
+        <button class="fpill" onclick="quickSearch('crypto token unlock vesting schedule')">Unlock</button>
+        <button class="fpill" onclick="quickSearch('crypto exchange listing Binance Coinbase')">Listing</button>
+        <button class="fpill" onclick="quickSearch('ETF approval SEC crypto 2025')">ETF</button>
+      </div>
+      <div style="display:flex;gap:7px;margin-bottom:7px">
+        <input type="text" id="aiq" placeholder="Cari event spesifik..." style="flex:1"/>
+        <button class="cbtn" style="flex:0 0 auto;padding:0 14px;margin:0" onclick="searchEv()">🔍</button>
+      </div>
+      <button class="sbtn" onclick="resetApiKey()" style="font-size:10px">🔑 Ganti / Hapus API Key</button>
+      <div id="ai-r" style="margin-top:10px"></div>
+    </div>
+  </div>
+
+  <!-- TAB: MANUAL -->
+  <div id="evtab-manual" class="evtab-panel">
+    <div class="card">
+      <div class="ct">✏️ Tambah Event Manual</div>
+      <div class="f"><label>Nama Event</label><input type="text" id="evn" placeholder="CPI Report, FOMC Meeting, Fed Rate..."/></div>
+      <div class="g2">
+        <div class="f"><label>Tanggal</label><input type="date" id="evd"/></div>
+        <div class="f"><label>Waktu (WIB)</label><input type="time" id="evt" value="20:30"/></div>
+      </div>
+      <div class="g2">
+        <div class="f"><label>Impact</label><select id="evi"><option value="high">🔴 High Impact</option><option value="med">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+        <div class="f"><label>Ingatkan sebelum</label><select id="evr"><option value="5">5 menit</option><option value="15" selected>15 menit</option><option value="30">30 menit</option><option value="60">1 jam</option><option value="1440">1 hari</option></select></div>
+      </div>
+      <div class="f"><label>Catatan / Perkiraan efek</label><input type="text" id="evc" placeholder="Potensi volatile, perkiraan naik/turun..."/></div>
+      <button class="cbtn" onclick="addEv()">⏰ Simpan &amp; Aktifkan Alarm</button>
+    </div>
+  </div>
+
+  <!-- TAB: SAVED -->
+  <div id="evtab-saved" class="evtab-panel">
+    <div class="card">
+      <div class="ct">🔔 Event Tersimpan</div>
+      <div id="ev-list"><div class="empty">Belum ada event.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 📊 PORTFOLIO ═══ -->
+<div class="sec" id="sec-port">
+  <div class="card">
+    <div class="ct">➕ Tambah Aset</div>
+    <div class="g2">
+      <div class="f"><label>Coin / Token</label><input type="text" id="pcoin" placeholder="BTC" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+      <div class="f un"><label>Jumlah</label><input type="number" id="pqty" placeholder="0.5"/><em></em></div>
+    </div>
+    <div class="g2">
+      <div class="f un"><label>Harga Beli (avg)</label><input type="number" id="pbuy" placeholder="65000"/><em>$</em></div>
+      <div class="f un"><label>Harga Sekarang</label><input type="number" id="pnow" placeholder="otomatis"/><em>$</em></div>
+    </div>
+    <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:8px;line-height:1.6">💡 Kosongkan "Harga Sekarang" agar otomatis diambil dari CoinGecko saat refresh.</div>
+    <button class="cbtn" onclick="addAset()">+ Tambah ke Portofolio</button>
+  </div>
+  <div class="card">
+    <div class="ct">📊 Ringkasan Portofolio</div>
+    <div class="price-bar">
+      <div class="pl" id="port-upd">Harga belum diperbarui</div>
+      <button class="pr-btn" onclick="refreshPrices()" id="refresh-btn"><span id="refresh-ic">⟳</span> Refresh Harga</button>
+    </div>
+    <div class="sg">
+      <div class="sc"><div class="sl">TOTAL VALUE</div><div class="sv" id="ptv">$0</div></div>
+      <div class="sc"><div class="sl">TOTAL P&L</div><div class="sv" id="ptpnl">$0</div></div>
+      <div class="sc"><div class="sl">MODAL</div><div class="sv" id="ptc">$0</div></div>
+      <div class="sc"><div class="sl">RETURN</div><div class="sv" id="ptr">0%</div></div>
+    </div>
+    <div class="cw" style="height:160px;margin-bottom:12px"><canvas id="pt-c"></canvas></div>
+    <div id="p-list"><div class="empty">Belum ada aset.</div></div>
+    <div class="io-row" style="margin-top:10px">
+      <button class="ebtn ex" onclick="exportData('portfolio')">⬇ Export Porto</button>
+      <button class="ebtn im" onclick="importData('portfolio')">⬆ Import Porto</button>
+    </div>
+    <button class="sbtn" style="margin-top:7px" onclick="if(confirm('Hapus semua aset? Data tidak bisa dikembalikan!')){portfolio=[];localStorage.setItem('ccp3-p',JSON.stringify(portfolio));rendPort();rendPortCh();toast('🗑 Portofolio dikosongkan.')}">🗑 Kosongkan Portofolio</button>
+  </div>
+</div>
+
+<!-- ═══ ↔ KONVERSI ═══ -->
+<div class="sec" id="sec-conv">
+  <!-- Multi-currency converter -->
+  <div class="card">
+    <div class="ct">🌐 Konversi Multi-Currency</div>
+    <!-- Currency tabs -->
+    <div class="chart-tabs" style="margin-bottom:12px">
+      <button class="ctab on" onclick="setCurr('IDR',this)">🇮🇩 IDR</button>
+      <button class="ctab" onclick="setCurr('MYR',this)">🇲🇾 MYR</button>
+      <button class="ctab" onclick="setCurr('SGD',this)">🇸🇬 SGD</button>
+      <button class="ctab" onclick="setCurr('EUR',this)">🇪🇺 EUR</button>
+      <button class="ctab" onclick="setCurr('GBP',this)">🇬🇧 GBP</button>
+      <button class="ctab" onclick="setCurr('JPY',this)">🇯🇵 JPY</button>
+    </div>
+    <div class="f un"><label>USDT</label><input type="number" id="cvu" placeholder="0" oninput="cvU()"/><em>USDT</em></div>
+    <div class="sw-c"><button class="sw-b" onclick="swapCV()">⇅</button></div>
+    <div class="f un"><label id="cvi-label">IDR (Rupiah)</label><input type="number" id="cvi" placeholder="0" oninput="cvI()"/><em id="cvi-em">IDR</em></div>
+    <div class="sep"></div>
+    <div class="f un" style="margin-bottom:8px"><label id="cvrate-label">Rate Manual (1 USDT = X IDR)</label><input type="number" id="cvrate" value="16320" oninput="upRate(this.value)"/><em id="cvrate-em">IDR</em></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+      <button class="cbtn" style="margin:0" onclick="fetchRate()">🔄 Refresh Live</button>
+      <button class="cbtn" style="margin:0;background:rgba(124,106,247,.15);border-color:rgba(124,106,247,.35)" onclick="fetchAllRates()">🌐 Semua Kurs</button>
+    </div>
+  </div>
+
+  <!-- All rates display -->
+  <div class="card" id="all-rates-card" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin-bottom:0">📊 Semua Kurs USDT</div>
+      <div id="rates-upd" style="font-size:9px;color:var(--sub);font-family:var(--mono)"></div>
+    </div>
+    <div id="all-rates-list"></div>
+  </div>
+
+  <!-- Quick ref table -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="ct" style="margin-bottom:0">📐 Referensi Cepat</div>
+      <div id="ref-curr-label" style="font-size:10px;color:var(--acc);font-family:var(--mono)">IDR</div>
+    </div>
+    <div id="ref-t"></div>
+  </div>
+
+  <!-- Portfolio custom coin mapping -->
+  <div class="card">
+    <div class="ct">🗺️ Custom Coin Mapping</div>
+    <div class="info">Tambahkan coin yang tidak ada di daftar bawaan agar bisa auto-refresh harga di Portfolio.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px">
+      <div class="f"><label>Symbol (contoh: PEPE)</label><input type="text" id="cm-sym" placeholder="MYTOKEN" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+      <div class="f"><label>CoinGecko ID</label><input type="text" id="cm-id" placeholder="my-token-id"/></div>
+    </div>
+    <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:8px;line-height:1.6">
+      💡 Cari ID di <a href="https://coingecko.com" target="_blank" style="color:var(--acc)">coingecko.com</a> — buka halaman coin, ambil bagian akhir URL.<br>
+      Contoh: coingecko.com/en/coins/<b style="color:var(--yel)">shiba-inu</b> → ID = shiba-inu
+    </div>
+    <button class="cbtn" onclick="addCoinMapping()">+ Tambah Mapping</button>
+    <div id="cm-list" style="margin-top:10px"></div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ─── STATE ───
+let RATE=16320, DIR='long', BDIR='long', PMODE='chg', JFIL='all';
+let trades=JSON.parse(localStorage.getItem('ccp3-t')||'[]');
+let portfolio=JSON.parse(localStorage.getItem('ccp3-p')||'[]');
+let events=JSON.parse(localStorage.getItem('ccp3-e')||'[]');
+let CH={eq:null,dca:null,fr:null,avg:null,pt:null};
+let toastTimer=null;
+
+// ─── HELPERS ───
+const G=id=>document.getElementById(id);
+const idr=v=>'Rp '+Math.round(Math.abs(v)*RATE).toLocaleString('id-ID');
+const f2=v=>Math.abs(v).toFixed(2);
+const f4=v=>Math.abs(v).toFixed(4);
+const cls=v=>v>=0?'G':'R';
+const sgn=v=>v>=0?'+':'-';
+// Fix Bug #6: XSS sanitization helper
+function esc(s){const d=document.createElement('div');d.textContent=String(s||'');return d.innerHTML;}
+let _apiKey=localStorage.getItem('ccp3-ak')||'';
+function toast(m){
+  const t=G('toast');t.textContent=m;t.classList.add('show');
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+function today(){return new Date().toISOString().split('T')[0];}
+
+// ─── NAV ───
+function go(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  G('sec-'+id).classList.add('on');btn.classList.add('on');
+  if(id==='journal'){rendJ();rendEQ();}
+  if(id==='port'){rendPort();rendPortCh();}
+  if(id==='ev'){rendEv();}
+  if(id==='conv'){buildRef();}
+}
+
+// ─── P&L ───
+function setDir(d){
+  DIR=d;
+  G('bL').className='db '+(d==='long'?'DL':'');
+  G('bS').className='db '+(d==='short'?'DS':'');
+  calc();
+}
+function setL(v){G('lsl').value=v;G('lv').textContent=v+'×';G('llbl').textContent=v+'×';calc();}
+function syncMod(s){
+  if(s==='u'){const v=parseFloat(G('cm').value)||0;G('cmi').value=v?Math.round(v*RATE):'';}
+  else{const v=parseFloat(G('cmi').value)||0;G('cm').value=v?(v/RATE).toFixed(2):'';}
+  calc();
+}
+function calc(){
+  const m=parseFloat(G('cm').value)||0,lev=parseFloat(G('lsl').value)||1;
+  const b=parseFloat(G('cb').value)||0,j=parseFloat(G('cj').value)||0;
+  const fm=parseFloat(G('cfm').value)||0,ft=parseFloat(G('cft').value)||0;
+  if(!m||!b||!j)return;
+  const pos=m*lev,qty=pos/b;
+  const diff=DIR==='long'?j-b:b-j;
+  // feeO = buka pakai maker fee, feeC = tutup pakai taker fee
+  const feeO=pos*(fm/100),feeC=qty*j*(ft/100);
+  const pnl=qty*diff-feeO-feeC;
+  const pct=(pnl/m)*100,p=pnl>=0;
+  const mr=(Math.abs(pnl)/pos*100);
+  G('rp1').textContent=(p?'+':'-')+'$'+f2(pnl);G('rp1').className='amt '+(p?'G':'R');
+  G('rp2').textContent=(p?'+':'')+pct.toFixed(2)+'%';G('rp2').className='sub '+(p?'G':'R');
+  G('rpos').textContent='$'+pos.toFixed(2)+' ('+qty.toFixed(4)+' unit)';
+  G('rusd').textContent=(p?'+':'-')+'$'+f2(pnl);G('rusd').className='rv '+(p?'G':'R');
+  G('ridr').textContent=(p?'+':'-')+idr(pnl);G('ridr').className='rv '+(p?'G':'R');
+  G('rfee').textContent='$'+(feeO+feeC).toFixed(4);
+  G('rroe').textContent=(p?'+':'')+pct.toFixed(2)+'%';G('rroe').className='rv '+(p?'G':'R');
+  G('pnl-mr').textContent=mr.toFixed(2)+'%';
+  // Liquidation price calculation (isolated margin, futures)
+  // Formula: Long liq = entry * (1 - 1/lev + maintenance_margin/lev)
+  // Simplified: Long liq = b * (1 - (1/lev) * 0.9) | Short liq = b * (1 + (1/lev) * 0.9)
+  // Maintenance margin ratio biasanya 0.5% (Binance standard)
+  const mmr=0.005;
+  const liqLong=b*(1-(1/lev)+mmr);
+  const liqShort=b*(1+(1/lev)-mmr);
+  const liq=DIR==='long'?liqLong:liqShort;
+  const liqDist=DIR==='long'?((b-liq)/b*100):((liq-b)/b*100);
+  if(liq>0&&b>0){
+    G('rliq').textContent='$'+liq.toFixed(liq<1?6:2);
+    G('rliq').className='rv R';
+    G('rliq-dist').textContent=liqDist.toFixed(2)+'% dari entry'+(liqDist<5?' ⚠️ BAHAYA!':liqDist<15?' ⚠️ Waspada':'');
+    G('rliq-dist').className='rv '+(liqDist<5?'R liq-danger':liqDist<15?'R':'G');
+  }
+  G('pnl-r').style.display='block';
+  calcQ();
+}
+function calcQ(){
+  const b=parseFloat(G('cb').value)||0,m=parseFloat(G('cm').value)||0,lev=parseFloat(G('lsl').value)||1;
+  const tp=parseFloat(G('qt').value)||0,sl=parseFloat(G('qs').value)||0;
+  if(!b||!m||(!tp&&!sl))return;
+  const pos=m*lev;
+  const tpP=DIR==='long'?b*(1+tp/100/lev):b*(1-tp/100/lev);
+  const slP=DIR==='long'?b*(1-sl/100/lev):b*(1+sl/100/lev);
+  const tpPnl=pos*tp/100,slPnl=pos*sl/100;
+  G('qtp').textContent='$'+tpP.toFixed(4);G('qtpp').textContent='+$'+tpPnl.toFixed(2);G('qtpid').textContent='+'+idr(tpPnl);
+  G('qsl').textContent='$'+slP.toFixed(4);G('qslp').textContent='-$'+slPnl.toFixed(2);G('qslid').textContent='-'+idr(slPnl);
+  G('qrr').textContent=sl>0?'1 : '+(tp/sl).toFixed(2):'—';
+  G('qpidr').textContent='+'+idr(tpPnl);G('qlidr').textContent='-'+idr(slPnl);
+  G('q-r').style.display='block';
+}
+function saveJournal(){
+  const m=parseFloat(G('cm').value)||0,lev=parseFloat(G('lsl').value)||1;
+  const b=parseFloat(G('cb').value)||0,j=parseFloat(G('cj').value)||0;
+  if(!m||!b||!j){toast('⚠️ Lengkapi P&L kalkulator dulu!');return;}
+  const fm=parseFloat(G('cfm').value)||0,ft=parseFloat(G('cft').value)||0;
+  const pos=m*lev,qty=pos/b,diff=DIR==='long'?j-b:b-j;
+  const feeO=pos*(fm/100),feeC=qty*j*(ft/100);
+  const pnl=qty*diff-feeO-feeC;
+  trades.push({id:Date.now(),pair:G('cp').value,dir:DIR,modal:m,lev,beli:b,jual:j,pnl,date:today(),outcome:pnl>=0?'win':'loss',note:'Dari kalkulator P&L',emosi:''});
+  savT();toast('✅ Trade disimpan ke Journal!');
+}
+
+// ─── % KALKULATOR ───
+function setMode(id,btn){
+  PMODE=id;
+  document.querySelectorAll('.mp').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  ['chg','tgt','rev','ldr'].forEach(m=>G('m-'+m).style.display=m===id?'block':'none');
+}
+function qChg(pct){
+  const a=parseFloat(G('cha').value)||0;
+  if(!a){toast('⚠️ Masukkan harga awal dulu!');return;}
+  G('chb').value=(a*(1+pct/100)).toFixed(6);calcChg();
+}
+function calcChg(){
+  const a=parseFloat(G('cha').value)||0,b=parseFloat(G('chb').value)||0,m=parseFloat(G('chm').value)||0;
+  if(!a||!b)return;
+  const diff=b-a,pct=(diff/a)*100,p=pct>=0;
+  const bep=!p?((a/b-1)*100):0;
+  const qty=m?m/a:null,pnl=qty!==null?qty*diff:null;
+  G('chg-r').style.display='block';
+  G('chpct').textContent=(p?'+':'')+pct.toFixed(4)+'%';G('chpct').className='hero-n '+(p?'G':'R');
+  G('chsub').textContent='$'+a.toLocaleString(undefined,{maximumFractionDigits:6})+' → $'+b.toLocaleString(undefined,{maximumFractionDigits:6});
+  G('chra').textContent='$'+a.toLocaleString(undefined,{maximumFractionDigits:6})+' ('+idr(a)+')';
+  G('chrb').textContent='$'+b.toLocaleString(undefined,{maximumFractionDigits:6})+' ('+idr(b)+')';
+  G('chdf').textContent=(p?'+':'-')+'$'+f4(diff);G('chdf').className='rv '+(p?'G':'R');
+  G('chpu').textContent=pnl!=null?(p?'+':'-')+'$'+f2(pnl):'— (isi modal)';G('chpu').className='rv '+(pnl!=null?cls(pnl):'N');
+  G('chpi').textContent=pnl!=null?(p?'+':'-')+idr(pnl):'—';G('chpi').className='rv '+(pnl!=null?cls(pnl):'N');
+  G('chbep').textContent=!p?'+'+bep.toFixed(4)+'% untuk recovery':'— (sudah profit 🎉)';
+  // sync ke tabel multi%
+  if(!G('mpb').value)G('mpb').value=a;
+  if(!G('mpm').value&&m)G('mpm').value=m;
+  calcMP();
+}
+function calcMP(){
+  const base=parseFloat(G('mpb').value)||0,m=parseFloat(G('mpm').value)||0;
+  if(!base)return;
+  G('mp-r').style.display='block';
+  const qty=m?m/base:null;
+  const steps=[-20,-15,-10,-5,-3,-1,1,3,5,10,15,20];
+  G('mpb2').innerHTML=steps.map(pct=>{
+    const pr=base*(1+pct/100),df=pr-base,pnl=qty!==null?qty*df:null,up=pct>=0;
+    return`<tr><td class="${up?'G':'R'}">${up?'+':''}${pct}%</td><td class="N">$${pr.toFixed(4)}</td><td class="${up?'G':'R'}">${up?'+':'-'}$${f4(df)}</td><td class="${up?'G':'R'}">${pnl!=null?(up?'+':'-')+'$'+f2(pnl):'—'}</td></tr>`;
+  }).join('');
+}
+function setTpct(v){G('tgpct').value=v;calcTgt();}
+function calcTgt(){
+  const p=parseFloat(G('tgp').value)||0,pct=parseFloat(G('tgpct').value)||0,m=parseFloat(G('tgm').value)||0;
+  if(!p)return;
+  const tgt=p*(1+pct/100),diff=tgt-p,up=pct>=0,pnl=m?(m/p)*diff:null;
+  G('tgt-r').style.display='block';
+  G('tgpr').textContent='$'+tgt.toFixed(6);G('tgpr').className='hero-n '+(up?'G':'R');
+  G('tgsb').textContent=(up?'▲ Naik ':'▼ Turun ')+Math.abs(pct).toFixed(2)+'% dari $'+p.toLocaleString();
+  G('tgdf').textContent=(up?'+':'-')+'$'+f4(diff);G('tgdf').className='rv '+(up?'G':'R');
+  G('tgpu').textContent=pnl!=null?(up?'+':'-')+'$'+f2(pnl):'— (isi modal)';G('tgpu').className='rv '+(pnl!=null?cls(pnl):'N');
+  G('tgpi').textContent=pnl!=null?(up?'+':'-')+idr(pnl):'—';G('tgpi').className='rv '+(pnl!=null?cls(pnl):'N');
+  G('tgid').textContent=idr(tgt);
+  calcSc();
+}
+function calcSc(){
+  const e=parseFloat(G('sce').value)||0,m=parseFloat(G('scm').value)||0;
+  const tp=parseFloat(G('sctp').value)||0,sl=parseFloat(G('scsl').value)||0;
+  if(!e||(!tp&&!sl))return;
+  G('sc-r').style.display='block';
+  const tpP=e*(1+tp/100),slP=e*(1-sl/100);
+  const tpPnl=m?(m/e)*(tpP-e):null,slPnl=m?(m/e)*(slP-e):null;
+  G('sctpp').textContent='$'+tpP.toFixed(4);G('sctppl').textContent=tpPnl!=null?'+$'+f2(tpPnl):'+'+tp+'%';G('sctpid').textContent=tpPnl!=null?'+'+idr(tpPnl):'';
+  G('scslp').textContent='$'+slP.toFixed(4);G('scslpl').textContent=slPnl!=null?'-$'+f2(slPnl):'-'+sl+'%';G('scslid').textContent=slPnl!=null?'-'+idr(slPnl):'';
+  G('scrr').textContent=sl>0?'1 : '+(tp/sl).toFixed(2):'—';
+  G('scmpidr').textContent=tpPnl!=null?'+'+idr(tpPnl):'—';
+  G('scmlidr').textContent=slPnl!=null?'-'+idr(slPnl):'—';
+}
+function calcRv(){
+  const b=parseFloat(G('rvb').value)||0,n=parseFloat(G('rvn').value)||0,m=parseFloat(G('rvm').value)||0;
+  if(!b||!n)return;
+  const drop=((n-b)/b)*100,need=((b/n)-1)*100,dn=drop<0,qty=m?m/b:null,loss=qty!==null?qty*(n-b):null;
+  G('rv-r').style.display='block';
+  G('rvneed').textContent=(dn?'+':'-')+Math.abs(need).toFixed(4)+'%';G('rvneed').className='hero-n '+(dn?'G':'W');
+  G('rvsub').textContent=dn?'untuk kembali ke harga beli $'+b.toLocaleString():'Posisi sudah profit! 🎉';
+  G('rvdrop').textContent=(drop>=0?'+':'')+drop.toFixed(4)+'%';G('rvdrop').className='rv '+(drop>=0?'G':'R');
+  G('rvlu').textContent=loss!=null?(loss>=0?'+':'-')+'$'+f2(loss):'— (isi modal)';G('rvlu').className='rv '+(loss!=null?cls(loss):'N');
+  G('rvli').textContent=loss!=null?(loss>=0?'+':'-')+idr(loss):'—';G('rvli').className='rv '+(loss!=null?cls(loss):'N');
+  G('rvbep').textContent='$'+b.toFixed(6);G('rvbid').textContent=idr(b);
+}
+function calcLdr(){
+  const base=parseFloat(G('ldb').value)||0,m=parseFloat(G('ldm').value)||0;
+  const step=parseFloat(G('lds').value)||5,lvl=parseInt(G('ldl').value)||6;
+  if(!base)return;
+  G('ldr-r').style.display='block';
+  const qty=m?m/base:null;let rows=[];
+  for(let i=lvl;i>=-lvl;i--){
+    const pct=i*step,pr=base*(1+pct/100),df=pr-base,pnl=qty!==null?qty*df:null,isB=i===0;
+    rows.push(`<tr class="${isB?'base':''}">`+
+      `<td class="${isB?'W':pct>0?'G':pct<0?'R':'N'}">${isB?'⭐ BASE':(pct>0?'+':'')+pct.toFixed(1)+'%'}</td>`+
+      `<td class="N">$${pr.toLocaleString(undefined,{maximumFractionDigits:4})}</td>`+
+      `<td style="color:var(--sub);font-size:10px">${idr(pr)}</td>`+
+      `<td class="${pct>0?'G':pct<0?'R':'N'}">${pnl!=null?(pct>=0?'+':'-')+'$'+f2(pnl):(pct>0?'▲':pct<0?'▼':'—')}</td></tr>`);
+  }
+  G('ldr-b').innerHTML=rows.join('');
+}
+
+// ─── JOURNAL ───
+function savT(){localStorage.setItem('ccp3-t',JSON.stringify(trades));}
+function addTrade(){
+  const m=parseFloat(G('jm').value)||0,b=parseFloat(G('jb').value)||0,j=parseFloat(G('jj').value)||0;
+  if(!m||!b||!j){toast('⚠️ Lengkapi modal, harga beli, dan jual!');return;}
+  const dir=G('jd').value,lev=parseFloat(G('jl').value)||1;
+  const fm=parseFloat(G('jfm').value)||0.02,ft=parseFloat(G('jft').value)||0.06;
+  const pos=m*lev,qty=pos/b,diff=dir==='long'?j-b:b-j;
+  const feeO=pos*(fm/100),feeC=qty*j*(ft/100);
+  const pnl=qty*diff-feeO-feeC;
+  trades.push({id:Date.now(),pair:G('jp').value.trim()||'UNKNOWN',dir,modal:m,lev,beli:b,jual:j,pnl,date:G('jdt').value||today(),outcome:G('jo').value,note:G('jn').value,emosi:G('jem').value});
+  savT();
+  ['jp','jm','jb','jj','jn'].forEach(id=>G(id).value='');
+  G('jem').value='';G('jdt').value=today();
+  rendJ();rendEQ();toast('✅ Trade disimpan!');
+}
+function delTrade(id){trades=trades.filter(t=>t.id!==id);savT();rendJ();rendEQ();}
+function filt(f,btn){JFIL=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rendJ();}
+function rendJ(){
+  const wins=trades.filter(t=>t.outcome==='win'),losses=trades.filter(t=>t.outcome==='loss');
+  const wr=trades.length?((wins.length/trades.length)*100).toFixed(1):0;
+  const tpnl=trades.reduce((a,t)=>a+t.pnl,0);
+  const ap=wins.length?wins.reduce((a,t)=>a+t.pnl,0)/wins.length:0;
+  const al=losses.length?losses.reduce((a,t)=>a+t.pnl,0)/losses.length:0;
+  const gp=wins.reduce((a,t)=>a+t.pnl,0),gl=Math.abs(losses.reduce((a,t)=>a+t.pnl,0));
+  const pf=gl>0?(gp/gl).toFixed(2):'∞';const pp=tpnl>=0;
+  G('jwr').textContent=wr+'%';
+  G('jtpnl').textContent=(pp?'+':'-')+'$'+f2(tpnl);G('jtpnl').className='sv '+(pp?'G':'R');
+  G('jap').textContent='+$'+ap.toFixed(2);G('jal').textContent='$'+al.toFixed(2);
+  G('jtc').textContent=trades.length;
+  G('jpf').textContent=pf;G('jpf').className='sv '+(parseFloat(pf)>=1||pf==='∞'?'G':'R');
+  // Reset extra stats placeholders (calculated in rendEQ)
+  if(!trades.length){G('jmdd').textContent='$0';G('jbest').textContent='$0';G('jworst').textContent='$0';}
+  let fil=[...trades];
+  // Outcome / direction filter
+  if(JFIL==='win')fil=fil.filter(t=>t.outcome==='win');
+  else if(JFIL==='loss')fil=fil.filter(t=>t.outcome==='loss');
+  else if(JFIL==='long')fil=fil.filter(t=>t.dir==='long');
+  else if(JFIL==='short')fil=fil.filter(t=>t.dir==='short');
+  else if(JFIL==='be')fil=fil.filter(t=>t.outcome==='be');
+  // Search by pair
+  const searchQ=(G('j-search')?.value||'').trim().toUpperCase();
+  if(searchQ)fil=fil.filter(t=>(t.pair||'').toUpperCase().includes(searchQ)||(t.note||'').toUpperCase().includes(searchQ));
+  const list=G('j-list');
+  // Update trade count
+  const countEl=G('j-count');
+  if(countEl)countEl.textContent=fil.length+' / '+trades.length+' trade';
+  if(!fil.length){list.innerHTML='<div class="empty">'+(searchQ?'Tidak ada trade "'+searchQ+'". Coba kata kunci lain.':'Tidak ada trade ditemukan.')+'</div>';return;}
+  list.innerHTML=fil.reverse().map(t=>{
+    const p=t.pnl>=0;
+    return`<div class="tr2"><div style="flex:1;min-width:0">
+      <div style="font-family:var(--mono);font-size:12px;font-weight:700">${esc(t.pair)} <span style="color:${t.dir==='long'?'var(--grn)':'var(--red)'};font-size:10px">${esc(t.dir.toUpperCase())}</span> ${esc(t.emosi||'')}</div>
+      <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-top:2px">${esc(t.date)} · ${esc(String(t.lev))}× · $${esc(String(t.modal))}</div>
+      ${t.note?`<div style="font-size:10px;color:var(--sub);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.note.substring(0,40))}</div>`:''}
+    </div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+      <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:${p?'var(--grn)':'var(--red)'}">${p?'+':'-'}\$${f2(t.pnl)}</div>
+      <span class="tag ${t.outcome==='win'?'TW':t.outcome==='loss'?'TL':'TM'}">${esc(t.outcome.toUpperCase())}</span>
+      <button class="del" onclick="delTrade(${t.id})">🗑</button>
+    </div></div>`;
+  }).join('');
+}
+// ─── CHART SWITCHER ───
+function switchChart(id,btn){
+  document.querySelectorAll('.chart-panel').forEach(p=>p.classList.remove('active-panel'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  G('chart-'+id).classList.add('active-panel');btn.classList.add('on');
+  if(id==='dd')rendDD();
+  else if(id==='monthly')rendMonthly();
+  else if(id==='heatmap')rendHeatmap();
+}
+
+function rendEQ(){
+  const s=[...trades].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  let eq=0;
+  const data=s.map(t=>{eq+=t.pnl;return+eq.toFixed(2);});
+  const labels=s.map(t=>t.date.slice(5));
+
+  // Extra stats
+  const wins=trades.filter(t=>t.pnl>0),losses=trades.filter(t=>t.pnl<0);
+  const best=trades.length?Math.max(...trades.map(t=>t.pnl)):0;
+  const worst=trades.length?Math.min(...trades.map(t=>t.pnl)):0;
+  // Max drawdown calculation
+  let peak=0,maxDD=0;
+  data.forEach(v=>{if(v>peak)peak=v;const dd=peak-v;if(dd>maxDD)maxDD=dd;});
+  G('jmdd').textContent='-$'+maxDD.toFixed(2);
+  G('jbest').textContent='$'+best.toFixed(2);
+  G('jworst').textContent=(worst<0?'-':'')+'$'+Math.abs(worst).toFixed(2);
+
+  if(CH.eq)CH.eq.destroy();
+  const pos=!data.length||data[data.length-1]>=0;
+  const ptRad=data.length<=30?3:0;
+  CH.eq=new Chart(G('eq-c'),{
+    type:'line',
+    data:{labels:labels.length?labels:['—'],datasets:[{
+      data:data.length?data:[0],
+      borderColor:pos?'#00e5a0':'#ff3d5a',
+      borderWidth:2,pointRadius:ptRad,pointHoverRadius:5,tension:0.35,fill:true,
+      backgroundColor:pos?'rgba(0,229,160,.07)':'rgba(255,61,90,.07)'
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.y.toFixed(2)}}},
+      scales:{
+        x:{grid:{color:'rgba(26,45,69,.5)'},ticks:{color:'#6a90b8',font:{size:9},maxTicksLimit:8}},
+        y:{grid:{color:'rgba(26,45,69,.5)'},ticks:{color:'#6a90b8',font:{size:9},callback:v=>'$'+v}}
+      }
+    }
+  });
+}
+
+// ─── DRAWDOWN CHART ───
+function rendDD(){
+  const s=[...trades].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  let eq=0,peak=0;
+  const ddData=s.map(t=>{
+    eq+=t.pnl;
+    if(eq>peak)peak=eq;
+    return peak>0?+(((eq-peak)/peak)*100).toFixed(2):0;
+  });
+  const labels=s.map(t=>t.date.slice(5));
+  if(CH.dd)CH.dd.destroy();
+  CH.dd=new Chart(G('dd-c'),{
+    type:'line',
+    data:{labels:labels.length?labels:['—'],datasets:[{
+      label:'Drawdown %',
+      data:ddData.length?ddData:[0],
+      borderColor:'#ff3d5a',borderWidth:1.5,
+      pointRadius:ddData.length<=30?2:0,tension:0.2,
+      fill:true,backgroundColor:'rgba(255,61,90,.12)',
+      stepped:false
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(2)+'%'}}},
+      scales:{
+        x:{grid:{color:'rgba(26,45,69,.5)'},ticks:{color:'#6a90b8',font:{size:9},maxTicksLimit:8}},
+        y:{grid:{color:'rgba(26,45,69,.5)'},ticks:{color:'#6a90b8',font:{size:9},callback:v=>v+'%'},
+          reverse:false,suggestedMin:-50,suggestedMax:5}
+      }
+    }
+  });
+}
+
+// ─── MONTHLY P&L CHART ───
+function rendMonthly(){
+  if(!trades.length){if(CH.mo)CH.mo.destroy();return;}
+  const map={};
+  trades.forEach(t=>{
+    const key=t.date.slice(0,7); // YYYY-MM
+    if(!map[key])map[key]={pnl:0,win:0,loss:0};
+    map[key].pnl+=t.pnl;
+    if(t.pnl>0)map[key].win++;else if(t.pnl<0)map[key].loss++;
+  });
+  const months=Object.keys(map).sort();
+  const pnls=months.map(m=>+map[m].pnl.toFixed(2));
+  const colors=pnls.map(v=>v>=0?'rgba(0,229,160,.8)':'rgba(255,61,90,.8)');
+  const borderColors=pnls.map(v=>v>=0?'#00e5a0':'#ff3d5a');
+  const labels=months.map(m=>{
+    const [y,mo]=m.split('-');
+    const names=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+    return names[parseInt(mo)-1]+' '+y.slice(2);
+  });
+  if(CH.mo)CH.mo.destroy();
+  CH.mo=new Chart(G('monthly-c'),{
+    type:'bar',
+    data:{labels,datasets:[{
+      label:'P&L Bulanan',data:pnls,
+      backgroundColor:colors,borderColor:borderColors,borderWidth:1.5,borderRadius:5
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{
+        label:ctx=>'$'+ctx.parsed.y.toFixed(2),
+        afterLabel:ctx=>{const m=months[ctx.dataIndex];return 'W:'+map[m].win+' L:'+map[m].loss;}
+      }}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#6a90b8',font:{size:9}}},
+        y:{grid:{color:'rgba(26,45,69,.5)'},ticks:{color:'#6a90b8',font:{size:9},callback:v=>'$'+v},
+          border:{dash:[3,3]}}
+      }
+    }
+  });
+}
+
+// ─── WIN/LOSS HEATMAP ───
+function rendHeatmap(){
+  const grid=G('heatmap-grid');
+  if(!trades.length){grid.innerHTML='<div class="empty" style="padding:20px 0">Belum ada data trade</div>';return;}
+
+  // Build date map — 6 bulan terakhir
+  const today2=new Date();const start=new Date(today2);
+  start.setMonth(start.getMonth()-5);start.setDate(1);
+  const dateMap={};
+  trades.forEach(t=>{
+    if(!dateMap[t.date])dateMap[t.date]={wins:0,losses:0};
+    if(t.pnl>0)dateMap[t.date].wins++;else if(t.pnl<0)dateMap[t.date].losses++;
+  });
+
+  // Build weeks × days grid
+  const DAY_MS=86400000;
+  // Find Monday of start week
+  const startDay=new Date(start);
+  startDay.setDate(startDay.getDate()-((startDay.getDay()+6)%7));
+  const endDay=new Date(today2);
+  endDay.setDate(endDay.getDate()+(6-(endDay.getDay()+6)%7));
+
+  const weeks=[];let week=[];let cur=new Date(startDay);
+  while(cur<=endDay){
+    week.push(new Date(cur));
+    if(week.length===7){weeks.push(week);week=[];}
+    cur=new Date(cur.getTime()+DAY_MS);
+  }
+  if(week.length)weeks.push(week);
+
+  const DAYS=['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+  const cellSz=Math.max(11,Math.min(15,Math.floor((window.innerWidth-60)/(weeks.length+1))));
+
+  let html='<div style="display:flex;gap:2px;align-items:flex-start">';
+  // Day labels column
+  html+='<div style="display:flex;flex-direction:column;gap:2px;padding-top:18px">';
+  DAYS.forEach(d=>html+=`<div style="height:${cellSz}px;width:24px;font-size:8px;color:#6a90b8;font-family:monospace;display:flex;align-items:center">${d}</div>`);
+  html+='</div>';
+
+  // Weeks
+  let lastMonth=-1;
+  weeks.forEach((wk,wi)=>{
+    // Month label above week if first week of month
+    const firstInMonth=wk.find(d=>d.getDate()===1||wi===0);
+    const MONTHS=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+    const mLabel=firstInMonth?MONTHS[firstInMonth.getMonth()]:'';
+
+    html+=`<div style="display:flex;flex-direction:column;gap:2px">`;
+    html+=`<div style="height:16px;font-size:8px;color:#6a90b8;font-family:monospace;text-align:center;line-height:16px">${mLabel}</div>`;
+    wk.forEach(day=>{
+      // Fix timezone: pakai local date bukan UTC (toISOString bisa beda 1 hari di WIB)
+      const ds=day.getFullYear()+'-'+String(day.getMonth()+1).padStart(2,'0')+'-'+String(day.getDate()).padStart(2,'0');
+      const data=dateMap[ds];
+      const isFuture=day>today2;
+      const isOutRange=day<start;
+      let bg='#111c2e';let title='Tidak ada trade';
+      if(!isFuture&&!isOutRange&&data){
+        if(data.wins>0&&data.losses===0){bg='#00e5a0';title=`${ds}: ${data.wins} win`;}
+        else if(data.losses>0&&data.wins===0){bg='#ff3d5a';title=`${ds}: ${data.losses} loss`;}
+        else if(data.wins>0&&data.losses>0){bg='#ffd740';title=`${ds}: ${data.wins}W ${data.losses}L`;}
+      }
+      const opacity=isFuture?0.2:isOutRange?0.3:1;
+      html+=`<div title="${title}" style="width:${cellSz}px;height:${cellSz}px;border-radius:2px;background:${bg};opacity:${opacity};cursor:default;transition:transform .1s" onmouseover="this.style.transform='scale(1.4)'" onmouseout="this.style.transform='scale(1)'"></div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  grid.innerHTML=html;
+
+  // Stats below heatmap
+  const totalDays=Object.keys(dateMap).length;
+  const winDays=Object.keys(dateMap).filter(d=>dateMap[d].wins>0&&dateMap[d].losses===0).length;
+  G('heatmap-label').textContent=`${totalDays} hari trading · ${winDays} hari profit murni`;
+}
+
+// ─── RISK ───
+function rmL(v){G('rmlv').textContent=v+'×';G('rmll').textContent=v+'×';calcRisk();}
+function calcRisk(){
+  const m=parseFloat(G('rmm').value)||0,rp=parseFloat(G('rmr').value)||1;
+  const e=parseFloat(G('rme').value)||0,sl=parseFloat(G('rmsl').value)||0;
+  const lev=parseFloat(G('rmlev').value)||1;
+  if(!m)return;
+  G('risk-r').style.display='block';
+  const maxR=m*(rp/100);
+  G('rmmr').textContent='$'+maxR.toFixed(2);
+  if(e&&sl){
+    const slD=Math.abs(e-sl)/e,pos=slD>0?maxR/slD:0,qty=pos/e;
+    G('rmpos').textContent='$'+pos.toFixed(2)+' (×'+lev+' = $'+(pos*lev).toFixed(2)+')';
+    G('rmqty').textContent=qty.toFixed(6)+' unit';
+    G('rmslp').textContent=(slD*100).toFixed(2)+'%';
+  }else{G('rmpos').textContent='—';G('rmqty').textContent='—';G('rmslp').textContent='—';}
+  G('rmkel').textContent='25.0% (asumsi WR 50%, RR 2:1)';
+  G('rmsaf').textContent='$'+(m-maxR).toFixed(2);
+  const mc=rp<=1?'#00e5a0':rp<=2?'#ffd740':rp<=5?'#ff6b35':'#ff3d5a';
+  G('rmmet').style.width=Math.min(rp/10*100,100)+'%';G('rmmet').style.background=mc;
+  G('rmlvl').textContent=rp<=1?'Konservatif ✅':rp<=2?'Moderat ⚠️':rp<=5?'Agresif 🔶':'Sangat Berisiko 🔴';
+}
+function calcDD(){
+  const m=parseFloat(G('ddm').value)||0,r=parseFloat(G('ddr').value)||2,s=parseInt(G('dds').value)||5;
+  if(!m)return;
+  let x=m;for(let i=0;i<s;i++)x*=(1-r/100);
+  const lost=m-x,pct=(lost/m*100),rec=(lost/x*100);
+  G('dd-r').style.display='block';
+  G('ddaf').textContent='$'+x.toFixed(2);G('dddd').textContent='-$'+lost.toFixed(2);
+  G('ddpct').textContent='-'+pct.toFixed(2)+'%';G('ddrec').textContent='+'+rec.toFixed(2)+'% untuk BEP';
+  G('ddidr').textContent=idr(x);
+}
+
+// ─── DCA ───
+function addDCA(){const d=document.createElement('div');d.className='dr';d.innerHTML=`<div class="f un"><label>Harga Beli</label><input type="number" class="dp" placeholder="0" oninput="calcDCA()"/><em>$</em></div><div class="f un"><label>Modal ($)</label><input type="number" class="da" placeholder="0" oninput="calcDCA()"/><em>$</em></div><button class="xb" onclick="xDCA(this)">✕</button>`;G('dca-e').appendChild(d);}
+function xDCA(b){b.closest('.dr').remove();calcDCA();}
+function calcDCA(){
+  const ps=[...document.querySelectorAll('.dp')].map(i=>parseFloat(i.value)||0);
+  const as=[...document.querySelectorAll('.da')].map(i=>parseFloat(i.value)||0);
+  const now=parseFloat(G('dcan').value)||0;
+  const v=ps.map((p,i)=>({p,a:as[i]})).filter(x=>x.p>0&&x.a>0);
+  if(!v.length)return;
+  const tm=v.reduce((s,x)=>s+x.a,0),tq=v.reduce((s,x)=>s+x.a/x.p,0),avg=tm/tq;
+  // Fee calculation per order (maker fee untuk semua entry, taker untuk close)
+  const fm=(parseFloat(G('dca-fm')?.value)||0.1)/100;
+  const ft=(parseFloat(G('dca-ft')?.value)||0.1)/100;
+  const totalFeeOpen=v.reduce((s,x)=>s+x.a*fm,0); // total fee buka semua order
+  const totalFeeClose=now?tq*now*ft:0;             // fee tutup posisi
+  const totalFee=totalFeeOpen+totalFeeClose;
+  const nv=now?tq*now:0;
+  const pnl=now?nv-tm-totalFee:0;
+  const pct=now?(pnl/tm*100):0,p=pnl>=0;
+  G('dca-r').style.display='block';
+  G('dcaavg').textContent='$'+avg.toFixed(4);G('dcatm').textContent='$'+tm.toFixed(2);
+  G('dcatq').textContent=tq.toFixed(6)+' unit';G('dcanv').textContent=now?'$'+nv.toFixed(2):'—';
+  G('dcapu').textContent=now?(p?'+':'-')+'$'+f2(pnl):'—';G('dcapu').className='rv '+(p?'G':'R');
+  G('dcapi').textContent=now?(p?'+':'-')+idr(pnl):'—';G('dcapi').className='rv '+(p?'G':'R');
+  G('dcapct').textContent=now?(p?'+':'')+pct.toFixed(2)+'%':'—';G('dcapct').className='rv '+(p?'G':'R');
+  G('dcabe').textContent='$'+avg.toFixed(4);
+  // Show fee info
+  if(G('dca-fee-info'))G('dca-fee-info').textContent=now?'Total fee: $'+totalFee.toFixed(4)+' (open+close)':'';
+  rendDCACh(v,avg,now);
+}
+function rendDCACh(entries,avg,now){
+  if(CH.dca)CH.dca.destroy();
+  const tot=entries.reduce((s,x)=>s+x.a,0);
+  CH.dca=new Chart(G('dca-c'),{type:'bar',data:{labels:entries.map((_,i)=>'Order '+(i+1)),datasets:[{label:'Harga',data:entries.map(e=>e.p),backgroundColor:'rgba(124,106,247,.5)',borderColor:'#7c6af7',borderWidth:1,yAxisID:'y'},{label:'Modal',data:entries.map(e=>e.a),backgroundColor:'rgba(0,229,160,.35)',borderColor:'#00e5a0',borderWidth:1,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(26,45,69,.4)'},ticks:{color:'#6a90b8',font:{size:9}}},y:{position:'left',grid:{color:'rgba(26,45,69,.4)'},ticks:{color:'#7c6af7',font:{size:9},callback:v=>'$'+v.toLocaleString()}},y1:{position:'right',grid:{display:false},ticks:{color:'#00e5a0',font:{size:9},callback:v=>'$'+v}}}}});
+}
+
+// ─── FUNDING ───
+function calcFund(){
+  const r=parseFloat(G('frr').value)||0,intv=parseFloat(G('fri').value)||8;
+  const pos=parseFloat(G('frp').value)||0,lev=parseFloat(G('frl').value)||1;
+  const days=parseFloat(G('frd').value)||7,dir=G('frdir').value;
+  if(!pos)return;
+  const perI=pos*lev*(r/100),ipd=24/intv,pd=perI*ipd,pw=pd*7,tot=pd*days;
+  const paying=(dir==='long'&&r>=0)||(dir==='short'&&r<0);
+  G('fund-r').style.display='block';
+  G('frtot').textContent=(paying?'-':'+')+'$'+tot.toFixed(4);G('frtot').className='amt '+(paying?'R':'G');
+  G('frp8').textContent=(paying?'-':'+')+'$'+perI.toFixed(4);G('frp8').className='rv '+(paying?'R':'G');
+  G('frpd').textContent=(paying?'-':'+')+'$'+pd.toFixed(4);G('frpd').className='rv '+(paying?'R':'G');
+  G('frpw').textContent=(paying?'-':'+')+'$'+pw.toFixed(4);G('frpw').className='rv '+(paying?'R':'G');
+  G('frst').textContent=paying?'🔴 Anda MEMBAYAR funding':'🟢 Anda MENERIMA funding';
+  G('frid').textContent=(paying?'-':'+')+(paying?idr(tot):'Rp '+Math.round(tot*RATE).toLocaleString('id-ID'));G('frid').className='rv '+(paying?'R':'G');
+  // B/E: berapa persen harga harus bergerak untuk menutupi total funding cost
+  const beShift=pos>0?(tot/(pos*lev))*100:0;
+  const entryEl=G('frent');
+  const entryPrice=entryEl?parseFloat(entryEl.value)||0:0;
+  const bePrice=entryPrice>0?(dir==='long'?entryPrice*(1+beShift/100):entryPrice*(1-beShift/100)):0;
+  G('frbe').innerHTML=paying
+    ?'Harga harus bergerak <b style="color:var(--yel)">'+beShift.toFixed(3)+'%</b> untuk cover funding'
+    +'<br><span style="color:var(--sub);font-size:10px">B/E perlu untung ≥ biaya funding</span>'
+    +'<br><span style="color:var(--sub);font-size:10px">Total bayar: $'+tot.toFixed(4)+'</span>'
+    +(bePrice>0?'<br>B/E Price: <b style="color:var(--grn)">$'+bePrice.toFixed(4)+'</b>':'')
+    :'<span style="color:var(--grn)">Kamu menerima funding — tidak ada B/E shift</span>';
+  rendFRCh(pd,days,paying);
+}
+function rendFRCh(pd,days,paying){
+  if(CH.fr)CH.fr.destroy();
+  let c=0;const data=Array.from({length:days},()=>{c+=(paying?-pd:pd);return+c.toFixed(4);});
+  CH.fr=new Chart(G('fr-c'),{type:'bar',data:{labels:data.map((_,i)=>'H'+(i+1)),datasets:[{data,backgroundColor:data.map(v=>v>=0?'rgba(0,229,160,.45)':'rgba(255,61,90,.45)'),borderColor:data.map(v=>v>=0?'#00e5a0':'#ff3d5a'),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(26,45,69,.4)'},ticks:{color:'#6a90b8',font:{size:9}}},y:{grid:{color:'rgba(26,45,69,.4)'},ticks:{color:'#6a90b8',font:{size:9},callback:v=>'$'+v.toFixed(3)}}}}});
+}
+
+// ─── BREAK-EVEN ───
+function setBED(d){BDIR=d;G('beL').className='db '+(d==='long'?'DL':'');G('beS').className='db '+(d==='short'?'DS':'');calcBE();}
+function calcBE(){
+  const e=parseFloat(G('bee').value)||0,lev=parseFloat(G('bel').value)||1;
+  const ft=parseFloat(G('beft').value)||0,fr=parseFloat(G('befr').value)||0;
+  const per=parseFloat(G('beper').value)||0,sl=parseFloat(G('besl').value)||0;
+  if(!e)return;
+  const totFee=2*(ft/100),fund=(fr/100)*per,slipC=sl/100,totC=totFee+fund+slipC;
+  const beP=BDIR==='long'?e*(1+totC/lev):e*(1-totC/lev);
+  const diff=Math.abs(beP-e);
+  G('be-r').style.display='block';
+  G('bep').textContent='$'+beP.toFixed(6);
+  G('besub').textContent='Entry: $'+e.toLocaleString()+' | '+BDIR.toUpperCase();
+  G('bepct').textContent=(diff/e*100).toFixed(4)+'% '+(BDIR==='long'?'↑ naik':'↓ turun')+' dari entry';
+  G('befee').textContent='$'+(e*totFee).toFixed(6);G('befund').textContent='$'+(e*fund).toFixed(6);
+  G('becost').textContent='$'+(e*totC).toFixed(6);G('beidr').textContent=idr(beP);
+}
+
+// ─── MULTI AVG ───
+function addAVG(){const d=document.createElement('div');d.className='dr';d.innerHTML=`<div class="f un"><label>Harga Entry</label><input type="number" class="avp" placeholder="0" oninput="calcAVG()"/><em>$</em></div><div class="f un"><label>Modal ($)</label><input type="number" class="ava" placeholder="0" oninput="calcAVG()"/><em>$</em></div><button class="xb" onclick="xAVG(this)">✕</button>`;G('avg-e').appendChild(d);}
+function xAVG(b){b.closest('.dr').remove();calcAVG();}
+function calcAVG(){
+  const ps=[...document.querySelectorAll('.avp')].map(i=>parseFloat(i.value)||0);
+  const as=[...document.querySelectorAll('.ava')].map(i=>parseFloat(i.value)||0);
+  const now=parseFloat(G('avgn').value)||0,lev=parseFloat(G('avgl').value)||1;
+  const v=ps.map((p,i)=>({p,a:as[i]})).filter(x=>x.p>0&&x.a>0);
+  if(!v.length)return;
+  // Fix: avg price = total modal / total koin (tanpa leverage, leverage hanya perbesar posisi)
+  const tm=v.reduce((s,x)=>s+x.a,0);
+  const tq=v.reduce((s,x)=>s+x.a/x.p,0);
+  const avg=tm/tq;
+  const posSize=tm*lev;
+  const totalCoins=posSize/avg;
+  const val=now?totalCoins*now:0,pnl=now?val-posSize:0,chg=now?((now-avg)/avg*100):0,p=pnl>=0;
+  G('avg-r').style.display='block';
+  G('avgavg').textContent='$'+avg.toFixed(4);G('avgtot').textContent='$'+posSize.toFixed(2)+' (lev '+lev+'×)';
+  G('avgcoins').textContent=totalCoins.toFixed(6)+' unit';G('avgval').textContent=now?'$'+val.toFixed(2):'—';
+  G('avgpnl').textContent=now?(p?'+':'-')+'$'+f2(pnl):'—';G('avgpnl').className='rv '+(p?'G':'R');
+  G('avgidr').textContent=now?(p?'+':'-')+idr(pnl):'—';G('avgidr').className='rv '+(p?'G':'R');
+  G('avgchg').textContent=now?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—';G('avgchg').className='rv '+(chg>=0?'G':'R');
+  rendAVGCh(v);
+}
+function rendAVGCh(entries){
+  if(CH.avg)CH.avg.destroy();
+  const tot=entries.reduce((s,x)=>s+x.a,0);
+  CH.avg=new Chart(G('avg-c'),{type:'bar',data:{labels:entries.map((_,i)=>'Entry '+(i+1)),datasets:[{label:'Harga',data:entries.map(e=>e.p),backgroundColor:'rgba(124,106,247,.5)',borderColor:'#7c6af7',borderWidth:1,yAxisID:'y'},{label:'Bobot%',data:entries.map(e=>+(e.a/tot*100).toFixed(1)),backgroundColor:'rgba(255,107,53,.4)',borderColor:'#ff6b35',borderWidth:1,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(26,45,69,.4)'},ticks:{color:'#6a90b8',font:{size:9}}},y:{position:'left',grid:{color:'rgba(26,45,69,.4)'},ticks:{color:'#7c6af7',font:{size:9},callback:v=>'$'+v.toLocaleString()}},y1:{position:'right',grid:{display:false},ticks:{color:'#ff6b35',font:{size:9},callback:v=>v+'%'}}}}});
+}
+
+// ─── EVENTS ───
+
+// ── Tab switcher ──
+function evTab(id,btn){
+  document.querySelectorAll('.evtab-panel').forEach(p=>p.classList.remove('active-evtab'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  G('evtab-'+id).classList.add('active-evtab');btn.classList.add('on');
+  if(id==='feed'&&!FEED_LOADED)fetchAllFeeds(false);
+  if(id==='saved')rendEv();
+}
+
+// ── Manual event ──
+function addEv(){
+  const name=G('evn').value.trim(),date=G('evd').value,time=G('evt').value;
+  if(!name||!date||!time){toast('⚠️ Lengkapi nama, tanggal, dan waktu!');return;}
+  const ev={id:Date.now(),name,date,time,imp:G('evi').value,rem:parseInt(G('evr').value),note:G('evc').value};
+  events.push(ev);localStorage.setItem('ccp3-e',JSON.stringify(events));
+  schedAlarm(ev);rendEv();
+  G('evn').value='';G('evc').value='';
+  reqNotif();toast('✅ "'+name+'" tersimpan! Alarm aktif.');
+  evTab('saved',document.querySelectorAll('.ctab')[3]);
+}
+function schedAlarm(ev){
+  const t=new Date(ev.date+'T'+ev.time),a=new Date(t.getTime()-ev.rem*60000);
+  const delay=a.getTime()-Date.now();
+  if(delay>0)setTimeout(()=>{
+    if(Notification.permission==='granted')new Notification('⏰ CryptoCalc: '+ev.name,{body:'Dimulai dalam '+ev.rem+' menit! 🔔',icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⏰</text></svg>'});
+    toast('⏰ '+ev.name+' — dimulai dalam '+ev.rem+' menit!');
+  },delay);
+}
+function reqNotif(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();}
+function delEv(id){events=events.filter(e=>e.id!==id);localStorage.setItem('ccp3-e',JSON.stringify(events));rendEv();}
+function rendEv(){
+  const list=G('ev-list');
+  if(!events.length){list.innerHTML='<div class="empty">Belum ada event tersimpan.<br><span style="font-size:10px;color:var(--sub)">Cari di AI Search atau Feed lalu tap + tambahkan.</span></div>';return;}
+  const s=[...events].sort((a,b)=>new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time));
+  list.innerHTML=s.map(ev=>{
+    const past=new Date(ev.date+'T'+ev.time)<new Date();
+    const cc=ev.imp==='high'?'TH':ev.imp==='med'?'TMED':'TLO';
+    const ci=ev.imp==='high'?'🔴':ev.imp==='med'?'🟡':'🟢';
+    return`<div class="evc ${past?'':'al'}" style="${past?'opacity:.5':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
+        <div style="font-size:13px;font-weight:600;flex:1">${esc(ev.name)}</div>
+        <div style="display:flex;gap:5px;align-items:center"><span class="tag ${cc}">${ci} ${esc(ev.imp.toUpperCase())}</span><button class="del" onclick="delEv(${ev.id})">🗑</button></div>
+      </div>
+      <div style="font-size:10px;color:var(--sub);font-family:var(--mono)">📅 ${esc(ev.date)} ${esc(ev.time)} WIB · ⏰ -${esc(String(ev.rem))}m</div>
+      ${ev.note?`<div style="font-size:11px;color:var(--sub);margin-top:5px;line-height:1.5">${esc(ev.note)}</div>`:''}
+      <div style="font-size:10px;color:${past?'var(--sub)':'var(--pur)'};font-family:var(--mono);margin-top:4px">${past?'✓ Sudah lewat':'🔔 Alarm aktif'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RSS FEED ENGINE ───
+let FEED_ITEMS=[], FEED_LOADED=false, FEED_FILTER='all', FEED_TIMER=null;
+
+const FEEDS=[
+  {id:'coindesk',    name:'CoinDesk',       url:'https://www.coindesk.com/arc/outboundfeeds/rss/',          color:'src-coindesk'},
+  {id:'cointelegraph',name:'CoinTelegraph', url:'https://cointelegraph.com/rss',                             color:'src-cointelegraph'},
+  {id:'decrypt',     name:'Decrypt',         url:'https://decrypt.co/feed',                                   color:'src-decrypt'},
+  {id:'theblock',    name:'The Block',       url:'https://www.theblock.co/rss.xml',                           color:'src-theblock'},
+  {id:'bitcoinmagazine',name:'Bitcoin Mag',  url:'https://bitcoinmagazine.com/.rss/full/',                    color:'src-bitcoinmagazine'},
+];
+
+// CORS proxy options (public, free, no key)
+const PROXIES=[
+  url=>`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url=>`https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+async function fetchRSS(feed){
+  for(const proxyFn of PROXIES){
+    try{
+      const proxyUrl=proxyFn(feed.url);
+      const ctrl=new AbortController();
+      const tid=setTimeout(()=>ctrl.abort(),8000);
+      const r=await fetch(proxyUrl,{signal:ctrl.signal});
+      clearTimeout(tid);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const raw=await r.json();
+      // allorigins wraps in {contents:...}, corsproxy returns plain
+      const xmlStr=raw.contents||raw;
+      if(typeof xmlStr!=='string'||!xmlStr.includes('<item'))throw new Error('No items');
+      const parser=new DOMParser();
+      const doc=parser.parseFromString(xmlStr,'text/xml');
+      const items=[...doc.querySelectorAll('item')].slice(0,15).map(item=>{
+        const title=item.querySelector('title')?.textContent||'';
+        const link=item.querySelector('link')?.textContent||item.querySelector('link')?.getAttribute('href')||'#';
+        const pubDate=item.querySelector('pubDate')?.textContent||'';
+        const desc=item.querySelector('description')?.textContent||'';
+        // Strip HTML tags from description
+        const cleanDesc=desc.replace(/<[^>]+>/g,'').substring(0,120).trim();
+        const date=pubDate?new Date(pubDate):new Date();
+        // Score relevance — crypto keywords boost
+        const cryptoKw=['bitcoin','btc','eth','ethereum','crypto','defi','nft','sec','fed','fomc','cpi','halving','listing','etf','token','blockchain','altcoin','solana','xrp','binance'];
+        const combined=(title+cleanDesc).toLowerCase();
+        const score=cryptoKw.reduce((s,k)=>s+(combined.includes(k)?1:0),0);
+        return{id:feed.id+':'+date.getTime()+':'+Math.random(),src:feed.id,srcName:feed.name,color:feed.color,title:title.trim(),link,desc:cleanDesc,date,score,ts:date.getTime()};
+      }).filter(i=>i.title&&i.score>0); // only crypto-relevant
+      return items;
+    }catch(e){continue;}
+  }
+  return []; // all proxies failed for this source
+}
+
+async function fetchAllFeeds(isManual=false){
+  const btn=G('feed-refresh-btn'),ic=G('feed-refresh-ic');
+  if(btn){btn.disabled=true;ic.className='spin';ic.textContent='⟳';}
+  G('feed-status').textContent='Mengambil berita terbaru...';
+  G('feed-list').innerHTML='<div class="ald">📡 Memuat dari '+FEEDS.length+' sumber... <div class="dots"><span></span><span></span><span></span></div></div>';
+
+  const results=await Promise.allSettled(FEEDS.map(f=>fetchRSS(f)));
+  let allItems=[];
+  let successCount=0;
+  results.forEach((r,i)=>{
+    if(r.status==='fulfilled'&&r.value.length){
+      allItems=[...allItems,...r.value];
+      successCount++;
+    }
+  });
+
+  // Sort by date descending, deduplicate by title similarity
+  allItems.sort((a,b)=>b.ts-a.ts);
+  const seen=new Set();
+  FEED_ITEMS=allItems.filter(item=>{
+    const key=item.title.toLowerCase().replace(/\s+/g,' ').substring(0,40);
+    if(seen.has(key))return false;
+    seen.add(key);return true;
+  });
+
+  FEED_LOADED=true;
+  const now=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+  const total=FEED_ITEMS.length;
+  G('feed-status').innerHTML=`<span class="auto-badge">🟢 Live</span> ${total} berita dari ${successCount}/${FEEDS.length} sumber · Diperbarui ${now} <span style="color:var(--sub)">· Auto-refresh 30 menit</span>`;
+
+  rendFeed();
+  if(btn){btn.disabled=false;ic.className='';ic.textContent='⟳';}
+  if(isManual&&total>0)toast('✅ '+total+' berita terbaru dimuat!');
+  else if(isManual&&total===0)toast('⚠️ Feed tidak dapat dimuat. Coba lagi.');
+
+  // Schedule auto-refresh every 30 minutes
+  if(FEED_TIMER)clearTimeout(FEED_TIMER);
+  FEED_TIMER=setTimeout(()=>fetchAllFeeds(false),30*60*1000);
+}
+
+function filterFeed(src,btn){
+  FEED_FILTER=src;
+  document.querySelectorAll('#feed-filters .fpill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  rendFeed();
+}
+
+function timeAgo(date){
+  const diff=Math.floor((Date.now()-date.getTime())/1000);
+  if(diff<60)return diff+'d yang lalu';
+  if(diff<3600)return Math.floor(diff/60)+'m yang lalu';
+  if(diff<86400)return Math.floor(diff/3600)+'j yang lalu';
+  return Math.floor(diff/86400)+'h yang lalu';
+}
+
+function rendFeed(){
+  const list=G('feed-list');
+  if(!FEED_ITEMS.length){
+    list.innerHTML='<div class="empty">Tidak ada berita. Tap Refresh untuk memuat ulang.</div>';return;
+  }
+  const filtered=FEED_FILTER==='all'?FEED_ITEMS:FEED_ITEMS.filter(i=>i.src===FEED_FILTER);
+  if(!filtered.length){list.innerHTML='<div class="empty">Tidak ada berita dari sumber ini.</div>';return;}
+  list.innerHTML=filtered.slice(0,40).map(item=>`
+    <a href="${encodeURI(item.link)}" target="_blank" rel="noopener" class="news-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <span class="news-src ${esc(item.color)}">${esc(item.srcName)}</span>
+        <span style="font-size:9px;color:var(--sub);font-family:var(--mono)">${timeAgo(item.date)}</span>
+      </div>
+      <div class="news-title">${esc(item.title)}</div>
+      ${item.desc?`<div style="font-size:10px;color:var(--sub);line-height:1.5;margin-top:3px">${esc(item.desc)}...</div>`:''}
+      <div style="font-size:9px;color:var(--pur);font-family:var(--mono);margin-top:5px">Baca selengkapnya ↗</div>
+    </a>`).join('');
+}
+
+// ─── AI SEARCH ───
+function quickSearch(q){G('aiq').value=q;searchEv();}
+async function searchEv(){
+  // Cek API key dulu
+  if(!_apiKey){
+    G('ai-r').innerHTML=`
+      <div style="background:var(--s3);border:1px solid var(--bd2);border-radius:10px;padding:12px;margin-top:4px">
+        <div style="font-size:11px;color:var(--yel);font-family:var(--mono);margin-bottom:8px">🔑 Masukkan Anthropic API Key kamu untuk mengaktifkan fitur ini.<br><span style="color:var(--sub);font-size:10px">Key disimpan di browser (localStorage) — tidak dikirim ke server manapun selain Anthropic.</span></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="password" id="ak-inp" placeholder="sk-ant-api03-..." style="flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;color:var(--txt);font-family:var(--mono);font-size:11px;outline:none"/>
+          <button onclick="saveApiKey()" style="padding:8px 12px;background:linear-gradient(135deg,#00e5a0,#00b377);border:none;border-radius:8px;color:#060c18;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">Simpan</button>
+        </div>
+        <div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-top:6px">Dapatkan API key di: <a href="https://console.anthropic.com" target="_blank" style="color:var(--acc)">console.anthropic.com</a></div>
+      </div>`;
+    return;
+  }
+  const q=G('aiq').value.trim();if(!q){toast('⚠️ Masukkan kata kunci!');return;}
+  const res=G('ai-r');
+  res.innerHTML='<div class="ald">🤖 Mencari event global... <div class="dots"><span></span><span></span><span></span></div></div>';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':_apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1200,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:[{role:'user',content:`Cari event crypto/ekonomi terkait: "${q}".
+Gunakan web search untuk menemukan informasi TERBARU dan AKURAT dari sumber terpercaya seperti: Bloomberg, Reuters, CoinDesk, CoinTelegraph, The Block, CoinGlass, CoinGecko, Decrypt, FedCalendar, Investing.com, CMEGroup.
+
+ATURAN:
+- Hanya event yang memiliki tanggal PASTI atau diperkirakan dalam 3 bulan ke depan
+- Prioritaskan event yang paling berpengaruh ke pasar crypto
+- Waktu dalam WIB (UTC+7)
+- Sebutkan sumber informasinya di field "source"
+
+Jawab HANYA JSON array (tanpa markdown, tanpa backtick, tanpa penjelasan):
+[{"name":"Nama Event","date":"YYYY-MM-DD","time":"HH:MM","impact":"high/med/low","desc":"Dampak ke crypto dalam 1 kalimat","source":"Bloomberg/CoinDesk/dll","category":"macro/crypto/defi/regulatory"}]
+
+Max 6 event. Urutkan dari yang paling dekat tanggalnya.`}]
+      })
+    });
+    if(!r.ok){
+      const err=await r.json().catch(()=>({}));
+      if(r.status===401){_apiKey='';localStorage.removeItem('ccp3-ak');res.innerHTML='<div class="empty" style="color:var(--red)">❌ API Key tidak valid. <button onclick="resetApiKey()" style="color:var(--acc);background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:11px">Ganti Key</button></div>';return;}
+      res.innerHTML=`<div class="empty" style="color:var(--red)">❌ Error ${r.status}: ${esc(err.error?.message||'Unknown error')}</div>`;return;
+    }
+    const d=await r.json();
+    const txt=d.content.filter(i=>i.type==='text').map(i=>i.text).join('\n');
+    const m=txt.match(/\[[\s\S]*?\]/);
+    const arr=m?JSON.parse(m[0]):[];
+    if(!arr.length){res.innerHTML='<div class="empty">Event tidak ditemukan. Coba kata kunci lain.</div>';return;}
+    res.innerHTML='<div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:8px">✅ Ditemukan '+arr.length+' event. Tap untuk isi form alarm:</div>'+
+    arr.map(ev=>{
+      const cc=ev.impact==='high'?'TH':ev.impact==='med'?'TMED':'TLO';
+      const ci=ev.impact==='high'?'🔴':ev.impact==='med'?'🟡':'🟢';
+      return`<div class="evc al" onclick="fillEv('${encodeURIComponent(JSON.stringify(ev))}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
+          <div style="font-size:12px;font-weight:600;flex:1">${esc(ev.name)}</div>
+          <span class="tag ${cc}">${ci} ${esc((ev.impact||'med').toUpperCase())}</span>
+        </div>
+        <div style="font-size:10px;color:var(--sub);font-family:var(--mono)">📅 ${esc(ev.date||'TBD')} ${esc(ev.time||'TBD')} WIB</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:5px;line-height:1.5">${esc(ev.desc||'')}</div>
+        <div style="font-size:10px;color:var(--pur);font-family:var(--mono);margin-top:6px">+ Tap untuk isi form & aktifkan alarm ↗</div>
+      </div>`;
+    }).join('');
+  }catch(e){res.innerHTML='<div class="empty" style="color:var(--red)">Gagal memuat. Periksa koneksi internet.</div>';}
+}
+function saveApiKey(){
+  const k=(G('ak-inp')?.value||'').trim();
+  if(!k.startsWith('sk-ant')){toast('⚠️ Format API key tidak valid!');return;}
+  _apiKey=k;localStorage.setItem('ccp3-ak',k);
+  G('ai-r').innerHTML='<div style="color:var(--acc);font-family:var(--mono);font-size:11px;padding:6px 0">✅ API Key tersimpan! Sekarang coba cari event.</div>';
+  toast('✅ API Key berhasil disimpan!');
+}
+function resetApiKey(){_apiKey='';localStorage.removeItem('ccp3-ak');G('ai-r').innerHTML='';toast('🔑 API Key dihapus.');}
+function fillEv(enc){
+  try{
+    const ev=JSON.parse(decodeURIComponent(enc));
+    G('evn').value=ev.name||'';G('evd').value=ev.date||today();
+    G('evt').value=ev.time||'20:00';G('evi').value=ev.impact||'med';G('evc').value=ev.desc||'';
+    G('evn').scrollIntoView({behavior:'smooth'});
+    toast('✅ Form diisi otomatis! Sesuaikan & tap Simpan.');
+  }catch(e){toast('⚠️ Gagal mengisi form.');}
+}
+
+// ─── PORTFOLIO ───
+
+// Mapping nama coin ke ID CoinGecko (top coins + yang sering dipakai trader Indo)
+const CGID={
+  BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple',
+  ADA:'cardano',DOGE:'dogecoin',AVAX:'avalanche-2',DOT:'polkadot',MATIC:'matic-network',
+  LINK:'chainlink',UNI:'uniswap',ATOM:'cosmos',LTC:'litecoin',BCH:'bitcoin-cash',
+  SHIB:'shiba-inu',TRX:'tron',NEAR:'near',APT:'aptos',ARB:'arbitrum',
+  OP:'optimism',INJ:'injective-protocol',SUI:'sui',SEI:'sei-network',TIA:'celestia',
+  PEPE:'pepe',WIF:'dogwifcoin',BONK:'bonk',FLOKI:'floki',MEME:'memecoin',
+  JTO:'jito-governance-token',PYTH:'pyth-network',JUP:'jupiter-exchange-solana',
+  RENDER:'render-token',FET:'fetch-ai',GRT:'the-graph',SAND:'the-sandbox',
+  MANA:'decentraland',AXS:'axie-infinity',IMX:'immutable-x',
+  USDT:'tether',USDC:'usd-coin',BUSD:'binance-usd'
+};
+
+function coinToId(sym){
+  const s=sym.toUpperCase().replace(/\/USDT|\/BTC|\/ETH/g,'');
+  return CGID[s]||s.toLowerCase();
+}
+
+async function refreshPrices(){
+  if(!portfolio.length){toast('⚠️ Portofolio kosong!');return;}
+  const btn=G('refresh-btn'),ic=G('refresh-ic');
+  btn.disabled=true;ic.className='spin';ic.textContent='⟳';
+  G('port-upd').textContent='Memperbarui harga...';
+  try{
+    // Kumpulkan unique coins, convert ke CoinGecko ID
+    const coins=[...new Set(portfolio.map(a=>a.coin))];
+    const ids=coins.map(coinToId);
+    // Coba CoinGecko public endpoint, lalu fallback ke pro endpoint
+    let data={};
+    const cgUrl=`https://api.coingecko.com/api/v3/simple/price?ids=${ids.join(',')}&vs_currencies=usd`;
+    const cgUrlPro=`https://pro-api.coingecko.com/api/v3/simple/price?ids=${ids.join(',')}&vs_currencies=usd`;
+    let fetched=false;
+    for(const url of [cgUrl]){
+      try{
+        const r=await fetch(url);
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        data=await r.json();
+        fetched=true;break;
+      }catch(e){continue;}
+    }
+    if(!fetched)throw new Error('Semua endpoint gagal');
+    let updated=0,failed=[];
+    portfolio=portfolio.map(a=>{
+      const cgId=coinToId(a.coin);
+      const price=data[cgId]?.usd;
+      if(price){updated++;return{...a,now:price};}
+      else{failed.push(a.coin);return a;}
+    });
+    localStorage.setItem('ccp3-p',JSON.stringify(portfolio));
+    const now=new Date();
+    const timeStr=now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    G('port-upd').textContent='✅ Diperbarui '+timeStr+' — '+updated+'/'+coins.length+' coin';
+    if(failed.length)toast('⚠️ Tidak ditemukan: '+failed.join(', '));
+    else toast('✅ Semua harga diperbarui!');
+    rendPort();rendPortCh();
+  }catch(e){
+    G('port-upd').textContent='❌ Gagal refresh — coba lagi';
+    toast('❌ Gagal ambil harga. Cek koneksi.');
+  }finally{
+    btn.disabled=false;ic.className='';ic.textContent='⟳';
+  }
+}
+
+function addAset(){
+  const coin=G('pcoin').value.trim().toUpperCase(),qty=parseFloat(G('pqty').value)||0;
+  const buy=parseFloat(G('pbuy').value)||0;
+  const nowRaw=G('pnow').value.trim();
+  const now=nowRaw?parseFloat(nowRaw)||buy:buy; // jika kosong, sementara pakai harga beli
+  if(!coin||!qty||!buy){toast('⚠️ Lengkapi coin, jumlah, dan harga beli!');return;}
+  portfolio.push({id:Date.now(),coin,qty,buy,now});
+  localStorage.setItem('ccp3-p',JSON.stringify(portfolio));
+  ['pcoin','pqty','pbuy','pnow'].forEach(id=>G(id).value='');
+  rendPort();rendPortCh();
+  toast('✅ '+coin+' ditambahkan! Tap "Refresh Harga" untuk update harga live.');
+}
+
+function delAset(id){
+  portfolio=portfolio.filter(a=>a.id!==id);
+  localStorage.setItem('ccp3-p',JSON.stringify(portfolio));
+  rendPort();rendPortCh();
+}
+
+function rendPort(){
+  if(!portfolio.length){
+    G('p-list').innerHTML='<div class="empty">Belum ada aset. Tambah coin di atas.</div>';
+    ['ptv','ptpnl','ptc','ptr'].forEach(id=>G(id).textContent=id==='ptr'?'0%':'$0');
+    return;
+  }
+  let tv=0,tc=0;
+  const rows=portfolio.map(a=>{
+    const val=a.qty*a.now,cost=a.qty*a.buy,pnl=val-cost,pct=((a.now-a.buy)/a.buy*100),p=pnl>=0;
+    tv+=val;tc+=cost;
+    return`<div class="pr">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--mono);font-size:13px;font-weight:700">${esc(a.coin)}</div>
+        <div style="font-size:10px;color:var(--sub);font-family:var(--mono)">${a.qty} unit @ $${a.buy.toLocaleString()}</div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--sub)">Harga kini: <span style="color:var(--txt)">$${a.now.toLocaleString(undefined,{maximumFractionDigits:6})}</span></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-family:var(--mono);font-size:13px;font-weight:700">$${val.toFixed(2)}</div>
+        <div style="font-size:10px;font-family:var(--mono);color:${p?'var(--grn)':'var(--red)'}">${p?'+':'-'}$${f2(pnl)} (${p?'+':''}${pct.toFixed(2)}%)</div>
+        <div style="font-size:10px;color:var(--sub);font-family:var(--mono)">${idr(val)}</div>
+      </div>
+      <button class="del" onclick="delAset(${a.id})" style="margin-left:8px;align-self:center;font-size:14px">✕</button>
+    </div>`;
+  });
+  const tp=tv-tc,tr2=tc>0?(tp/tc*100):0,pp=tp>=0;
+  G('ptv').textContent='$'+tv.toFixed(2);
+  G('ptpnl').textContent=(pp?'+':'-')+'$'+f2(tp);G('ptpnl').className='sv '+(pp?'G':'R');
+  G('ptc').textContent='$'+tc.toFixed(2);
+  G('ptr').textContent=(pp?'+':'')+tr2.toFixed(2)+'%';G('ptr').className='sv '+(pp?'G':'R');
+  G('p-list').innerHTML=rows.join('');
+}
+
+function rendPortCh(){
+  if(CH.pt)CH.pt.destroy();
+  if(!portfolio.length)return;
+  const cols=['#00e5a0','#7c6af7','#ff6b35','#ff3d5a','#ffd740','#38adf5','#b0a8f8','#ff9a5a','#00c8b0','#ff7090'];
+  CH.pt=new Chart(G('pt-c'),{
+    type:'doughnut',
+    data:{
+      labels:portfolio.map(a=>a.coin),
+      datasets:[{
+        data:portfolio.map(a=>+(a.qty*a.now).toFixed(2)),
+        backgroundColor:cols.slice(0,portfolio.length),
+        borderColor:'#0d1525',borderWidth:3,hoverBorderWidth:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{color:'#6a90b8',font:{size:10,family:'JetBrains Mono'},padding:10,boxWidth:12}}}
+    }
+  });
+}
+
+// ─── EXPORT / IMPORT ───
+function exportData(type){
+  let data,filename,label;
+  if(type==='journal'){
+    if(!trades.length){toast('⚠️ Tidak ada data journal untuk diekspor!');return;}
+    data={version:'ccp3',type:'journal',exported:new Date().toISOString(),count:trades.length,trades};
+    filename=`cryptocalc_journal_${today()}.json`;label='Journal ('+trades.length+' trade)';
+  } else {
+    if(!portfolio.length){toast('⚠️ Tidak ada aset untuk diekspor!');return;}
+    data={version:'ccp3',type:'portfolio',exported:new Date().toISOString(),count:portfolio.length,portfolio};
+    filename=`cryptocalc_portfolio_${today()}.json`;label='Portofolio ('+portfolio.length+' aset)';
+  }
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ '+label+' berhasil diekspor!');
+}
+
+function importData(type){
+  const input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    try{
+      const text=await file.text();
+      const data=JSON.parse(text);
+      // Validasi format
+      if(data.version!=='ccp3'){toast('⚠️ Format file tidak valid!');return;}
+      if(type==='journal'){
+        if(data.type!=='journal'||!Array.isArray(data.trades)){toast('⚠️ Bukan file journal CryptoCalc!');return;}
+        const merge=confirm(`Import ${data.trades.length} trade dari ${data.exported?.split('T')[0]||'unknown'}?\n\nPilih OK untuk GABUNG dengan data yang ada, Cancel untuk GANTI semua.`);
+        if(merge===null)return;
+        if(merge){
+          // Gabung, hindari duplikat berdasarkan id
+          const existIds=new Set(trades.map(t=>t.id));
+          const newTrades=data.trades.filter(t=>!existIds.has(t.id));
+          trades=[...trades,...newTrades];
+          toast('✅ '+newTrades.length+' trade baru ditambahkan!');
+        } else {
+          trades=data.trades;
+          toast('✅ Journal diganti: '+trades.length+' trade dimuat!');
+        }
+        savT();rendJ();rendEQ();
+      } else {
+        if(data.type!=='portfolio'||!Array.isArray(data.portfolio)){toast('⚠️ Bukan file portfolio CryptoCalc!');return;}
+        const merge=confirm(`Import ${data.portfolio.length} aset dari ${data.exported?.split('T')[0]||'unknown'}?\n\nOK = Gabung, Cancel = Ganti semua.`);
+        if(merge===null)return;
+        if(merge){
+          const existIds=new Set(portfolio.map(a=>a.id));
+          const newAssets=data.portfolio.filter(a=>!existIds.has(a.id));
+          portfolio=[...portfolio,...newAssets];
+          toast('✅ '+newAssets.length+' aset baru ditambahkan!');
+        } else {
+          portfolio=data.portfolio;
+          toast('✅ Portofolio diganti: '+portfolio.length+' aset dimuat!');
+        }
+        localStorage.setItem('ccp3-p',JSON.stringify(portfolio));
+        rendPort();rendPortCh();
+      }
+    }catch(err){toast('❌ Gagal membaca file. Pastikan format JSON valid.');}
+  };
+  input.click();
+}
+
+// ─── KONVERSI ───
+function upRate(v){
+  const parsed=parseFloat(v)||0;
+  if(parsed>1000)RATE=parsed;
+  G('rl').textContent='USDT = Rp '+Math.round(RATE).toLocaleString('id-ID');
+  buildRef();
+}
+function cvU(){const v=parseFloat(G('cvu').value)||0;G('cvi').value=v?Math.round(v*RATE):'';}
+function cvI(){const v=parseFloat(G('cvi').value)||0;G('cvu').value=v?(v/RATE).toFixed(4):'';}
+function swapCV(){const u=G('cvu').value,i=G('cvi').value;G('cvu').value=i?(parseFloat(i)/RATE).toFixed(4):'';G('cvi').value=u?Math.round(parseFloat(u)*RATE):'';}
+function buildRef(){G('ref-t').innerHTML=[1,5,10,50,100,500,1000,5000,10000].map(u=>`<div class="rr"><span class="rl">${u.toLocaleString()} USDT</span><span class="rv N">${idr(u)}</span></div>`).join('');}
+async function fetchRate(){
+  G('rl').textContent='Memuat rate...';
+
+  // Helper: fetch dengan timeout
+  async function fetchJSON(url, opts={}, ms=5000){
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),ms);
+    try{
+      const r=await fetch(url,{...opts,signal:ctrl.signal});
+      clearTimeout(tid);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return await r.json();
+    }catch(e){clearTimeout(tid);throw e;}
+  }
+
+  const sources=[
+    // 1. Binance — CORS-friendly, paling akurat untuk USDT/IDR
+    async()=>{
+      const d=await fetchJSON('https://api.binance.com/api/v3/ticker/price?symbol=USDTIDR');
+      const rate=parseFloat(d.price);
+      if(!rate||isNaN(rate)||rate<10000)throw new Error('bad');
+      return {rate, src:'Binance'};
+    },
+    // 2. Frankfurter — gratis, CORS open, data ECB
+    async()=>{
+      const d=await fetchJSON('https://api.frankfurter.app/latest?from=USD&to=IDR');
+      const rate=d.rates?.IDR;
+      if(!rate||rate<10000)throw new Error('bad');
+      return {rate, src:'Frankfurter'};
+    },
+    // 3. ExchangeRate-API — CORS open
+    async()=>{
+      const d=await fetchJSON('https://open.er-api.com/v6/latest/USD');
+      const rate=d.rates?.IDR;
+      if(!rate||rate<10000)throw new Error('bad');
+      return {rate, src:'ExchangeRate-API'};
+    },
+    // 4. CoinGecko — sebagai last resort
+    async()=>{
+      const d=await fetchJSON('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr');
+      const rate=d.tether?.idr;
+      if(!rate||rate<10000)throw new Error('bad');
+      return {rate, src:'CoinGecko'};
+    },
+  ];
+
+  for(const src of sources){
+    try{
+      const {rate, src:srcName}=await src();
+      RATE=Math.round(rate);
+      G('cvrate').value=RATE;
+      upRate(RATE);
+      localStorage.setItem('ccp3-rate',String(RATE));
+      toast('✅ Rate: 1 USDT = '+idr(1)+' ('+srcName+')');
+      return;
+    }catch(e){continue;}
+  }
+
+  // Semua API gagal — pakai localStorage cache
+  const cached=localStorage.getItem('ccp3-rate');
+  if(cached&&parseInt(cached)>10000){
+    RATE=parseInt(cached);
+    G('cvrate').value=RATE;
+    upRate(RATE);
+    G('rl').textContent='USDT = Rp '+RATE.toLocaleString('id-ID')+' (cache)';
+    toast('⚠️ Rate dari cache lokal. Koneksi terbatas.');
+  }else{
+    // Hardcode fallback terakhir — update manual di kurs jika perlu
+    RATE=16500;
+    G('cvrate').value=RATE;
+    upRate(RATE);
+    G('rl').textContent='USDT = Rp 16.500 (default)';
+    toast('⚠️ Tidak bisa ambil rate live. Set manual di tab Kurs.');
+  }
+}
+
+
+// ─── DARK/LIGHT MODE ───
+let THEME=localStorage.getItem('ccp3-theme')||'dark';
+function applyTheme(t){
+  THEME=t;
+  document.documentElement.setAttribute('data-theme',t==='light'?'light':'');
+  const btn=G('theme-btn');
+  if(btn)btn.textContent=t==='light'?'☀️':'🌙';
+  localStorage.setItem('ccp3-theme',t);
+}
+function toggleTheme(){applyTheme(THEME==='dark'?'light':'dark');}
+
+// ─── PRICE ALERT ENGINE ───
+let priceAlerts=JSON.parse(localStorage.getItem('ccp3-alerts')||'[]');
+let alertTimer=null;
+
+function saveAlerts(){localStorage.setItem('ccp3-alerts',JSON.stringify(priceAlerts));}
+
+function addAlert(){
+  const coin=(G('al-coin').value||'').trim().toUpperCase();
+  const price=parseFloat(G('al-price').value)||0;
+  const cond=G('al-cond').value;
+  const note=G('al-note').value.trim();
+  if(!coin||!price){toast('⚠️ Isi nama coin dan harga target!');return;}
+  priceAlerts.push({id:Date.now(),coin,price,cond,note,active:true,triggered:false});
+  saveAlerts();
+  G('al-coin').value='';G('al-price').value='';G('al-note').value='';
+  rendAlerts();updateAlertBadge();
+  toast('✅ Alert '+coin+' '+(cond==='above'?'↑ di atas':'↓ di bawah')+' $'+price+' aktif!');
+  reqNotif();
+  if(!alertTimer)startAlertChecker();
+}
+
+function delAlert(id){
+  priceAlerts=priceAlerts.filter(a=>a.id!==id);
+  saveAlerts();rendAlerts();updateAlertBadge();
+}
+
+function rendAlerts(){
+  const list=G('al-list');
+  if(!list)return;
+  const active=priceAlerts.filter(a=>!a.triggered);
+  const triggered=priceAlerts.filter(a=>a.triggered);
+  G('al-count').textContent=active.length>0?active.length+' aktif':'';
+  if(!priceAlerts.length){list.innerHTML='<div class="empty" style="padding:12px 0">Belum ada alert.</div>';return;}
+  list.innerHTML=[...active,...triggered].map(a=>{
+    const icon=a.cond==='above'?'↑':'↓';
+    const bg=a.triggered?'rgba(255,61,90,.08)':'rgba(0,229,160,.06)';
+    const border=a.triggered?'rgba(255,61,90,.25)':'rgba(0,229,160,.2)';
+    return`<div style="background:${bg};border:1px solid ${border};border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--mono);font-size:12px;font-weight:700">${esc(a.coin)} <span style="color:${a.cond==='above'?'var(--grn)':'var(--red)'}">${icon} $${a.price.toLocaleString()}</span></div>
+        ${a.note?'<div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-top:2px">'+esc(a.note)+'</div>':''}
+        <div style="font-size:9px;font-family:var(--mono);margin-top:3px;color:${a.triggered?'var(--red)':'var(--sub)'}">
+          ${a.triggered?'🔔 Triggered!':'⏳ Menunggu...'}
+          ${a.lastPrice?'· Harga kini: $'+a.lastPrice.toLocaleString():''}
+        </div>
+      </div>
+      <button onclick="delAlert(${a.id})" class="del" style="flex-shrink:0">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function updateAlertBadge(){
+  const badge=G('alert-badge');
+  if(!badge)return;
+  const active=priceAlerts.filter(a=>!a.triggered).length;
+  badge.style.display=active>0?'block':'none';
+}
+
+function openAlerts(){
+  G('alert-modal').style.display='block';
+  document.body.style.overflow='hidden';
+  rendAlerts();
+}
+function closeAlerts(){
+  G('alert-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+async function checkAlerts(){
+  if(!priceAlerts.some(a=>!a.triggered))return;
+  const coins=[...new Set(priceAlerts.filter(a=>!a.triggered).map(a=>a.coin))];
+  try{
+    const promises=coins.map(async coin=>{
+      try{
+        const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol='+coin+'USDT');
+        if(!r.ok)return null;
+        const d=await r.json();
+        return{coin,price:parseFloat(d.price)};
+      }catch{return null;}
+    });
+    const results=(await Promise.all(promises)).filter(Boolean);
+    let triggered=false;
+    priceAlerts=priceAlerts.map(a=>{
+      if(a.triggered)return a;
+      const res=results.find(r=>r.coin===a.coin);
+      if(!res)return a;
+      const hit=(a.cond==='above'&&res.price>=a.price)||(a.cond==='below'&&res.price<=a.price);
+      if(hit){
+        triggered=true;
+        const icon=a.cond==='above'?'↑':'↓';
+        if(Notification.permission==='granted'){
+          new Notification('🔔 Price Alert: '+a.coin,{
+            body:a.coin+' '+icon+' $'+a.price.toLocaleString()+'\nHarga: $'+res.price.toLocaleString()+'\n'+(a.note||''),
+          });
+        }
+        toast('🔔 '+a.coin+' '+icon+' $'+a.price.toLocaleString()+'!');
+        return{...a,triggered:true,lastPrice:res.price,triggeredAt:Date.now()};
+      }
+      return{...a,lastPrice:res.price};
+    });
+    if(triggered){saveAlerts();rendAlerts();updateAlertBadge();}
+  }catch(e){}
+}
+
+function startAlertChecker(){
+  if(alertTimer)clearInterval(alertTimer);
+  alertTimer=setInterval(checkAlerts,60000);
+  checkAlerts(); // run immediately
+}
+
+// ─── SHARE CARD ───
+function shareCard(){
+  const m=parseFloat(G('cm').value)||0,lev=parseFloat(G('lsl').value)||1;
+  const b=parseFloat(G('cb').value)||0,j=parseFloat(G('cj').value)||0;
+  const pair=G('cp').value||'CRYPTO';
+  const pnlEl=G('rp1');
+  if(!pnlEl||pnlEl.textContent==='—'){toast('⚠️ Hitung P&L dulu!');return;}
+  const pnl=pnlEl.textContent;
+  const pct=G('rp2')?.textContent||'';
+  const pos=G('rpos')?.textContent||'';
+  const liqEl=G('rliq')?.textContent||'—';
+  const feeEl=G('rfee')?.textContent||'—';
+  const isWin=pnlEl.className.includes('G');
+  const idr=G('ridr')?.textContent||'';
+
+  // Generate share card as canvas → download
+  const cv=document.createElement('canvas');
+  cv.width=600;cv.height=360;
+  const ctx=cv.getContext('2d');
+
+  // Background gradient
+  const bg=ctx.createLinearGradient(0,0,600,360);
+  bg.addColorStop(0,'#0d1525');bg.addColorStop(1,'#060c18');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,600,360);
+
+  // Top accent bar
+  const accent=ctx.createLinearGradient(0,0,600,0);
+  accent.addColorStop(0,isWin?'#00e5a0':'#ff3d5a');
+  accent.addColorStop(1,isWin?'#00b377':'#cc2040');
+  ctx.fillStyle=accent;ctx.fillRect(0,0,600,4);
+
+  // Watermark grid lines
+  ctx.strokeStyle='rgba(26,45,69,.4)';ctx.lineWidth=1;
+  for(let x=0;x<600;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,360);ctx.stroke();}
+  for(let y=0;y<360;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(600,y);ctx.stroke();}
+
+  // Logo gem
+  ctx.shadowColor=isWin?'#00e5a0':'#ff3d5a';ctx.shadowBlur=15;
+  ctx.fillStyle=isWin?'#00e5a0':'#ff3d5a';
+  ctx.beginPath();ctx.moveTo(28,28);ctx.lineTo(46,36);ctx.lineTo(28,44);ctx.lineTo(10,36);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;
+
+  // App name
+  ctx.fillStyle='#d8e8f8';ctx.font='bold 13px monospace';ctx.textAlign='left';
+  ctx.fillText('CRYPTOCALC PRO',55,40);
+  ctx.fillStyle='#6a90b8';ctx.font='11px monospace';
+  ctx.fillText(new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),55,56);
+
+  // Pair + direction
+  ctx.fillStyle='#d8e8f8';ctx.font='bold 26px monospace';ctx.textAlign='left';
+  ctx.fillText(pair.toUpperCase(),30,100);
+  ctx.fillStyle=DIR==='long'?'#00e5a0':'#ff3d5a';ctx.font='bold 14px monospace';
+  ctx.fillText('▲ '+DIR.toUpperCase()+' '+lev+'×',30,125);
+
+  // Big P&L number
+  ctx.fillStyle=isWin?'#00e5a0':'#ff3d5a';
+  ctx.shadowColor=isWin?'#00e5a0':'#ff3d5a';ctx.shadowBlur=20;
+  ctx.font='bold 58px monospace';ctx.textAlign='center';
+  ctx.fillText(pnl,300,205);
+  ctx.shadowBlur=0;
+
+  // Pct change
+  ctx.fillStyle=isWin?'rgba(0,229,160,.7)':'rgba(255,61,90,.7)';
+  ctx.font='bold 22px monospace';ctx.textAlign='center';
+  ctx.fillText(pct,300,240);
+
+  // IDR value
+  ctx.fillStyle='#6a90b8';ctx.font='14px monospace';ctx.textAlign='center';
+  ctx.fillText(idr,300,265);
+
+  // Details row
+  const details=[
+    {l:'Entry',v:'$'+b.toLocaleString()},
+    {l:'Exit',v:'$'+(j||b).toLocaleString()},
+    {l:'Modal',v:'$'+m},
+    {l:'Liq',v:liqEl},
+    {l:'Fee',v:feeEl},
+  ];
+  const colW=120;const startX=0;
+  details.forEach((d,i)=>{
+    const x=startX+(i*colW)+60;
+    ctx.fillStyle='#2a4060';ctx.fillRect(x-50,285,100,55);
+    ctx.fillStyle='#6a90b8';ctx.font='9px monospace';ctx.textAlign='center';
+    ctx.fillText(d.l.toUpperCase(),x,300);
+    ctx.fillStyle='#d8e8f8';ctx.font='bold 11px monospace';
+    ctx.fillText(d.v,x,318);
+  });
+
+  // Bottom watermark
+  ctx.fillStyle='rgba(106,144,184,.3)';ctx.font='10px monospace';ctx.textAlign='center';
+  ctx.fillText('CryptoCalc Pro • cryptocalc.app',300,352);
+
+  // Download
+  const link=document.createElement('a');
+  link.download='cryptocalc_'+pair+'_'+Date.now()+'.png';
+  link.href=cv.toDataURL('image/png');
+  link.click();
+  toast('📤 Share card berhasil didownload!');
+}
+
+
+// ─── DASHBOARD ───
+let DASH_PRICES={};
+const DASH_COINS=['BTC','ETH','SOL','BNB','XRP'];
+
+function rendDash(){
+  // Greeting
+  const h=new Date().getHours();
+  const greet=h<11?'Selamat pagi 🌅':h<15?'Selamat siang ☀️':h<18?'Selamat sore 🌆':'Selamat malam 🌙';
+  const el=G('dash-greet'); if(el)el.textContent=greet;
+  const de=G('dash-date');
+  if(de)de.textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Portfolio summary
+  if(portfolio.length){
+    let tv=0,tc=0;
+    portfolio.forEach(a=>{tv+=a.qty*a.now;tc+=a.qty*a.buy;});
+    const tp=tv-tc,pp=tp>=0,tr=tc>0?(tp/tc*100):0;
+    const el1=G('dash-tv');if(el1)el1.textContent='$'+tv.toFixed(2);
+    const el2=G('dash-tpnl');if(el2){el2.textContent=(pp?'+':'-')+'$'+Math.abs(tp).toFixed(2);el2.style.color=pp?'var(--grn)':'var(--red)';}
+    const el3=G('dash-tpct');if(el3){el3.textContent=(pp?'+':'')+tr.toFixed(2)+'%';el3.style.color=pp?'var(--grn)':'var(--red)';}
+    const el4=G('dash-tc');if(el4)el4.textContent='$'+tc.toFixed(2);
+    const el5=G('dash-idr');if(el5)el5.textContent='Rp '+Math.round(tv*RATE).toLocaleString('id-ID');
+    const el6=G('dash-ac');if(el6)el6.textContent=portfolio.length+' aset';
+  }
+
+  // Journal summary
+  if(trades.length){
+    const wins=trades.filter(t=>t.pnl>0).length;
+    const wr=Math.round(wins/trades.length*100);
+    const total=trades.reduce((s,t)=>s+t.pnl,0);
+    const el7=G('dash-wr');if(el7){el7.textContent=wr+'%';el7.style.color=wr>=50?'var(--grn)':'var(--red)';}
+    const el8=G('dash-jpnl');if(el8){el8.textContent=(total>=0?'+':'-')+'$'+Math.abs(total).toFixed(2);el8.style.color=total>=0?'var(--grn)':'var(--red)';}
+    const el9=G('dash-tc2');if(el9)el9.textContent=trades.length;
+    // Mini equity chart
+    rendMiniEQ();
+  }
+
+  // Alerts widget
+  const active=priceAlerts.filter(a=>!a.triggered);
+  const alEl=G('dash-alerts');
+  if(alEl){
+    if(!active.length){alEl.innerHTML='<div class="empty" style="padding:4px 0;font-size:11px">Belum ada alert aktif.</div>';}
+    else{
+      alEl.innerHTML=active.slice(0,3).map(a=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd)">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:600">${esc(a.coin)} <span style="color:${a.cond==='above'?'var(--grn)':'var(--red)'}">${a.cond==='above'?'↑':'↓'} $${a.price.toLocaleString()}</span></div>
+          <div style="font-size:10px;color:var(--sub);font-family:var(--mono)">${a.lastPrice?'$'+a.lastPrice.toLocaleString():'—'}</div>
+        </div>`).join('')+
+        (active.length>3?`<div style="font-size:10px;color:var(--sub);font-family:var(--mono);padding:6px 0">+${active.length-3} alert lainnya</div>`:'');
+    }
+  }
+
+  // Load prices
+  refreshDashPrices();
+}
+
+function rendMiniEQ(){
+  const s=[...trades].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  let eq=0;const data=s.map(t=>{eq+=t.pnl;return+eq.toFixed(2);});
+  const cv=G('dash-eq-c');if(!cv)return;
+  if(window._dashEQChart)window._dashEQChart.destroy();
+  const pos=!data.length||data[data.length-1]>=0;
+  window._dashEQChart=new Chart(cv,{
+    type:'line',
+    data:{labels:data.map((_,i)=>i+1),datasets:[{data,borderColor:pos?'#00e5a0':'#ff3d5a',borderWidth:1.5,pointRadius:0,tension:0.4,fill:true,backgroundColor:pos?'rgba(0,229,160,.08)':'rgba(255,61,90,.08)'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:400}}
+  });
+}
+
+async function refreshDashPrices(){
+  const btn=G('dash-refresh-btn'),ic=G('dash-ref-ic');
+  if(btn)btn.disabled=true;if(ic)ic.className='spin';
+  try{
+    const coins=[...new Set([...DASH_COINS,...portfolio.map(a=>a.coin)])].slice(0,8);
+    const results=await Promise.allSettled(coins.map(async coin=>{
+      const r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+coin+'USDT');
+      if(!r.ok)throw new Error();
+      const d=await r.json();
+      return{coin,price:parseFloat(d.lastPrice),chg:parseFloat(d.priceChangePercent)};
+    }));
+    const prices=results.filter(r=>r.status==='fulfilled').map(r=>r.value);
+    prices.forEach(p=>{DASH_PRICES[p.coin]=p;});
+    const el=G('dash-prices');
+    if(el&&prices.length){
+      el.innerHTML=prices.map(p=>{
+        const up=p.chg>=0;
+        return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700">${esc(p.coin)}<span style="color:var(--sub);font-size:10px;font-weight:400">/USDT</span></div>
+          <div style="text-align:right">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:700">$${p.price.toLocaleString(undefined,{maximumFractionDigits:p.price<1?6:2})}</div>
+            <div style="font-family:var(--mono);font-size:10px;color:${up?'var(--grn)':'var(--red)'}">${up?'+':''}${p.chg.toFixed(2)}%</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }catch(e){}
+  finally{if(btn)btn.disabled=false;if(ic){ic.className='';ic.textContent='⟳';}}
+}
+
+// ─── SPOT CALCULATOR ───
+function calcSpot(){
+  const buy=parseFloat(G('sp-buy').value)||0;
+  const modal=parseFloat(G('sp-modal').value)||0;
+  const sell=parseFloat(G('sp-sell').value)||0;
+  const fee=(parseFloat(G('sp-fee').value)||0)/100;
+  if(!buy||!modal){G('spot-r').style.display='none';return;}
+  const qty=modal/buy;
+  const buyVal=modal;
+  const feeOpen=modal*fee;
+  const sellVal=sell?qty*sell:0;
+  const feeClose=sell?sellVal*fee:0;
+  const totalFee=feeOpen+feeClose;
+  const be=buy*(1+fee)/(1-fee); // break-even price including round-trip fee
+  const pnl=sell?sellVal-buyVal-totalFee:0;
+  const roi=sell?(pnl/modal*100):0;
+  const p=pnl>=0;
+  G('spot-r').style.display='block';
+  G('sp-pnl').textContent=(sell?(p?'+':'-'):'')+'$'+(sell?Math.abs(pnl).toFixed(2):'0');
+  G('sp-pnl').className='amt '+(sell?(p?'G':'R'):'N');
+  G('sp-qty').textContent=qty.toFixed(8)+' unit';
+  G('sp-bval').textContent='$'+buyVal.toFixed(2);
+  G('sp-sval').textContent=sell?'$'+sellVal.toFixed(2):'—';
+  G('sp-fee-tot').textContent='$'+totalFee.toFixed(4);
+  G('sp-roi').textContent=sell?(p?'+':'')+roi.toFixed(2)+'%':'—';
+  G('sp-roi').className='rv '+(sell?(p?'G':'R'):'N');
+  G('sp-be').textContent='$'+be.toFixed(buy<1?6:2);
+  G('sp-idr').textContent=sell?idr(pnl):'—';
+  G('sp-idr').className='rv '+(sell?(p?'G':'R'):'N');
+}
+
+function saveSpotJournal(){
+  const buy=parseFloat(G('sp-buy').value)||0;
+  const modal=parseFloat(G('sp-modal').value)||0;
+  const sell=parseFloat(G('sp-sell').value)||0;
+  const pair=G('sp-pair').value||'SPOT';
+  const fee=(parseFloat(G('sp-fee').value)||0)/100;
+  if(!buy||!modal||!sell){toast('⚠️ Lengkapi semua field dulu!');return;}
+  const qty=modal/buy;
+  const pnl=qty*sell-modal-(modal*fee)-(qty*sell*fee);
+  trades.push({id:Date.now(),pair:pair.trim(),dir:'long',modal,lev:1,beli:buy,jual:sell,pnl,date:today(),outcome:pnl>=0?'win':'loss',note:'Spot trade',emosi:''});
+  savT();toast('✅ Spot trade disimpan ke Journal!');
+}
+
+// ─── MULTI-CURRENCY ───
+let CURR='IDR';
+const CURR_INFO={
+  IDR:{label:'IDR (Rupiah)',sym:'IDR',flag:'🇮🇩',fmt:(v)=>'Rp '+Math.round(v).toLocaleString('id-ID')},
+  MYR:{label:'MYR (Ringgit)',sym:'MYR',flag:'🇲🇾',fmt:(v)=>'RM '+v.toFixed(2)},
+  SGD:{label:'SGD (Dollar SG)',sym:'SGD',flag:'🇸🇬',fmt:(v)=>'S$ '+v.toFixed(2)},
+  EUR:{label:'EUR (Euro)',sym:'EUR',flag:'🇪🇺',fmt:(v)=>'€'+v.toFixed(2)},
+  GBP:{label:'GBP (Pound)',sym:'GBP',flag:'🇬🇧',fmt:(v)=>'£'+v.toFixed(2)},
+  JPY:{label:'JPY (Yen)',sym:'JPY',flag:'🇯🇵',fmt:(v)=>'¥'+Math.round(v).toLocaleString()},
+};
+let CURR_RATES={IDR:RATE,MYR:4.7,SGD:1.35,EUR:0.92,GBP:0.79,JPY:149};
+
+function setCurr(curr,btn){
+  CURR=curr;
+  document.querySelectorAll('#sec-conv .ctab').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const info=CURR_INFO[curr];
+  if(G('cvi-label'))G('cvi-label').textContent=info.label;
+  if(G('cvi-em'))G('cvi-em').textContent=curr;
+  if(G('cvrate-label'))G('cvrate-label').textContent='Rate Manual (1 USDT = X '+curr+')';
+  if(G('cvrate-em'))G('cvrate-em').textContent=curr;
+  if(G('cvrate'))G('cvrate').value=CURR_RATES[curr]||'';
+  if(G('ref-curr-label'))G('ref-curr-label').textContent=curr;
+  G('cvu').value='';G('cvi').value='';
+  localStorage.setItem('ccp3-curr',curr);
+  buildRef();
+}
+
+function getCurrRate(){return CURR_RATES[CURR]||RATE;}
+
+// Override idr() to support multi-currency
+const _origIdr=idr;
+// Note: idr() already uses RATE globally - we patch RATE dynamically
+function cvU(){
+  const v=parseFloat(G('cvu').value)||0;
+  G('cvi').value=(v*getCurrRate()).toFixed(CURR==='JPY'?0:2);
+}
+function cvI(){
+  const v=parseFloat(G('cvi').value)||0;
+  const r=getCurrRate();
+  G('cvu').value=r>0?(v/r).toFixed(6):'';
+}
+
+async function fetchAllRates(){
+  const card=G('all-rates-card');
+  if(card)card.style.display='block';
+  const listEl=G('all-rates-list');
+  if(listEl)listEl.innerHTML='<div class="ald">Memuat semua kurs... <div class="dots"><span></span><span></span><span></span></div></div>';
+  try{
+    const r=await fetch('https://api.frankfurter.app/latest?from=USD');
+    const d=await r.json();
+    const currencies=[
+      {code:'IDR',name:'Rupiah',flag:'🇮🇩'},
+      {code:'MYR',name:'Ringgit Malaysia',flag:'🇲🇾'},
+      {code:'SGD',name:'Dollar Singapura',flag:'🇸🇬'},
+      {code:'EUR',name:'Euro',flag:'🇪🇺'},
+      {code:'GBP',name:'Pound Sterling',flag:'🇬🇧'},
+      {code:'JPY',name:'Yen Jepang',flag:'🇯🇵'},
+      {code:'AUD',name:'Dollar Australia',flag:'🇦🇺'},
+      {code:'CAD',name:'Dollar Kanada',flag:'🇨🇦'},
+      {code:'CHF',name:'Franc Swiss',flag:'🇨🇭'},
+      {code:'THB',name:'Baht Thailand',flag:'🇹🇭'},
+      {code:'PHP',name:'Peso Filipina',flag:'🇵🇭'},
+    ];
+    // Update cached rates
+    currencies.forEach(cur=>{
+      if(d.rates[cur.code])CURR_RATES[cur.code]=d.rates[cur.code];
+    });
+    // USDT ≈ USD for display
+    if(listEl){
+      listEl.innerHTML=currencies.map(cur=>{
+        const rate=d.rates[cur.code];
+        if(!rate)return'';
+        return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:18px">${cur.flag}</span>
+            <div><div style="font-family:var(--mono);font-size:12px;font-weight:600">${cur.code}</div>
+            <div style="font-size:10px;color:var(--sub)">${cur.name}</div></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:var(--mono);font-size:13px;font-weight:700">${rate.toLocaleString(undefined,{maximumFractionDigits:cur.code==='JPY'?0:4})}</div>
+            <div style="font-size:10px;color:var(--sub);font-family:var(--mono)">1 USDT</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    const el=G('rates-upd');
+    if(el)el.textContent='Update: '+new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    toast('✅ Semua kurs berhasil dimuat!');
+  }catch(e){
+    if(listEl)listEl.innerHTML='<div class="empty" style="color:var(--red)">Gagal memuat kurs. Coba lagi.</div>';
+    toast('❌ Gagal ambil kurs. Cek koneksi.');
+  }
+}
+
+// Override buildRef to use current currency
+const _origBuildRef=buildRef;
+function buildRef(){
+  const r=getCurrRate();
+  const info=CURR_INFO[CURR]||CURR_INFO['IDR'];
+  const el=G('ref-t');if(!el)return;
+  const amounts=[1,5,10,25,50,100,250,500,1000,2500,5000];
+  el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">'+
+    amounts.map(a=>`<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--s2);border-radius:7px;font-family:var(--mono);font-size:10px">
+      <span style="color:var(--sub)">$${a}</span>
+      <span style="color:var(--txt);font-weight:600">${info.fmt(a*r)}</span>
+    </div>`).join('')+'</div>';
+}
+
+// ─── CUSTOM COIN MAPPING ───
+let customCoins=JSON.parse(localStorage.getItem('ccp3-coins')||'{}');
+
+function addCoinMapping(){
+  const sym=(G('cm-sym').value||'').trim().toUpperCase();
+  const id=(G('cm-id').value||'').trim().toLowerCase();
+  if(!sym||!id){toast('⚠️ Isi symbol dan CoinGecko ID!');return;}
+  customCoins[sym]=id;
+  localStorage.setItem('ccp3-coins',JSON.stringify(customCoins));
+  // Also add to CGID map so refreshPrices uses it
+  CGID[sym]=id;
+  G('cm-sym').value='';G('cm-id').value='';
+  rendCoinMappings();
+  toast('✅ '+sym+' → '+id+' ditambahkan! Sekarang bisa refresh harga di Portfolio.');
+}
+
+function delCoinMapping(sym){
+  delete customCoins[sym];
+  delete CGID[sym];
+  localStorage.setItem('ccp3-coins',JSON.stringify(customCoins));
+  rendCoinMappings();
+  toast('🗑 Mapping '+sym+' dihapus.');
+}
+
+function rendCoinMappings(){
+  const el=G('cm-list');if(!el)return;
+  const all={...customCoins};
+  if(!Object.keys(all).length){el.innerHTML='<div class="empty" style="font-size:11px">Belum ada custom mapping.</div>';return;}
+  el.innerHTML='<div style="font-size:10px;color:var(--sub);font-family:var(--mono);margin-bottom:6px">Custom mappings ('+Object.keys(all).length+'):</div>'+
+    Object.entries(all).map(([sym,id])=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--s2);border-radius:8px;margin-bottom:5px">
+        <div style="font-family:var(--mono);font-size:11px"><span style="color:var(--acc);font-weight:700">${esc(sym)}</span> <span style="color:var(--sub)">→</span> ${esc(id)}</div>
+        <button onclick="delCoinMapping('${esc(sym)}')" class="del">🗑</button>
+      </div>`).join('');
+}
+
+// ─── UPDATE go() to handle new sections ───
+const _origGo=go;
+function go(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  G('sec-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+  if(id==='dash'){rendDash();}
+  if(id==='journal'){rendJ();rendEQ();}
+  if(id==='port'){rendPort();rendPortCh();}
+  if(id==='ev'){rendEv();}
+  if(id==='conv'){buildRef();rendCoinMappings();}
+}
+
+// ─── INIT ───
+G('jdt').value=today();G('evd').value=today();
+// Apply saved theme
+applyTheme(THEME);
+// Load custom coin mappings into CGID
+Object.assign(CGID,customCoins);
+// Currency: restore saved preference
+const savedCurr=localStorage.getItem('ccp3-curr')||'IDR';
+CURR=savedCurr;
+// Fetch rate + build ref
+fetchRate();
+// Render data
+rendJ();rendEQ();
+rendPort();rendPortCh();
+rendCoinMappings();
+events.forEach(ev=>schedAlarm(ev));
+// Price alerts
+updateAlertBadge();
+if(priceAlerts.some(a=>!a.triggered))startAlertChecker();
+if(portfolio.length){G('port-upd').textContent='Tap "Refresh Harga" untuk harga terbaru';}
+// Show Dashboard on load
+setTimeout(()=>{
+  const dashBtn=document.querySelector('.nb');
+  if(dashBtn)go('dash',dashBtn);
+  buildRef();
+},100);
+// Auto-load news feed
+setTimeout(()=>{if(typeof fetchAllFeeds==='function')fetchAllFeeds(false);},2000);
+
+// ─── PWA SETUP ───
+(function initPWA(){
+  function makeIcon(size){
+    const c=document.createElement('canvas');c.width=size;c.height=size;
+    const ctx=c.getContext('2d');
+    const r=size*0.12;
+    ctx.beginPath();ctx.moveTo(r,0);ctx.lineTo(size-r,0);ctx.quadraticCurveTo(size,0,size,r);
+    ctx.lineTo(size,size-r);ctx.quadraticCurveTo(size,size,size-r,size);
+    ctx.lineTo(r,size);ctx.quadraticCurveTo(0,size,0,size-r);
+    ctx.lineTo(0,r);ctx.quadraticCurveTo(0,0,r,0);ctx.closePath();
+    const bg=ctx.createLinearGradient(0,0,size,size);
+    bg.addColorStop(0,'#0d1525');bg.addColorStop(1,'#060c18');
+    ctx.fillStyle=bg;ctx.fill();
+    ctx.shadowColor='#00e5a0';ctx.shadowBlur=size*0.15;
+    const cx=size/2,cy=size/2,gw=size*0.38,gh=size*0.38;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy-gh);ctx.lineTo(cx+gw,cy);ctx.lineTo(cx,cy+gh);ctx.lineTo(cx-gw,cy);ctx.closePath();
+    const gem=ctx.createLinearGradient(cx-gw,cy-gh,cx+gw,cy+gh);
+    gem.addColorStop(0,'#00e5a0');gem.addColorStop(0.5,'#00c88a');gem.addColorStop(1,'#007a55');
+    ctx.fillStyle=gem;ctx.fill();ctx.shadowBlur=0;
+    ctx.beginPath();ctx.moveTo(cx,cy-gh);ctx.lineTo(cx+gw,cy);ctx.lineTo(cx,cy-gh*0.15);ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx,cy-gh);ctx.lineTo(cx-gw,cy);ctx.lineTo(cx,cy-gh*0.15);ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fill();
+    ctx.font='bold '+Math.round(size*0.18)+'px monospace';
+    ctx.fillStyle='rgba(255,255,255,0.9)';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('C',cx,cy+gh*0.48);
+    return c.toDataURL('image/png');
+  }
+
+  const icon192=makeIcon(192);
+  const icon512=makeIcon(512);
+  const appleEl=document.getElementById('apple-icon');
+  if(appleEl)appleEl.href=icon192;
+
+  const manifest={
+    name:'CryptoCalc Pro',short_name:'CryptoCalc',
+    description:'Kalkulator crypto lengkap untuk trader Indonesia',
+    start_url:'./',display:'standalone',
+    background_color:'#060c18',theme_color:'#060c18',
+    orientation:'portrait',lang:'id',
+    icons:[
+      {src:icon192,sizes:'192x192',type:'image/png',purpose:'any maskable'},
+      {src:icon512,sizes:'512x512',type:'image/png',purpose:'any maskable'}
+    ]
+  };
+  const mBlob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const mEl=document.getElementById('pwa-manifest');
+  if(mEl)mEl.href=URL.createObjectURL(mBlob);
+
+  // Service Worker hanya bisa jalan via http/https, bukan file://
+  // Jika dihost (GitHub Pages, Netlify, dll) SW akan aktif otomatis
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    const CACHE='ccp-v5';
+    const swCode='const CACHE="'+CACHE+'";const ASSETS=["https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap","https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"];self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})));self.skipWaiting();});self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener("fetch",e=>{const url=e.request.url;const isAPI=url.includes("coingecko.com")||url.includes("anthropic.com");const isCDN=url.includes("googleapis.com")||url.includes("cloudflare.com");if(isAPI){e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));return;}if(isCDN){e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(res=>{const clone=res.clone();caches.open(CACHE).then(c=>c.put(e.request,clone));return res;})));return;}e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});';
+    const swBlob=new Blob([swCode],{type:'application/javascript'});
+    const swURL=URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swURL,{scope:'./'})
+      .then(reg=>reg.update())
+      .catch(()=>{});  // silent fail — tidak perlu log
+  }
+
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();deferredPrompt=e;showInstallBanner();
+  });
+  window.addEventListener('appinstalled',()=>{
+    hideInstallBanner();
+    const t=document.getElementById('toast');if(t){t.textContent='Berhasil diinstall!';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+    deferredPrompt=null;
+  });
+
+  function showInstallBanner(){
+    if(document.getElementById('install-banner'))return;
+    const b=document.createElement('div');b.id='install-banner';
+    b.innerHTML='<div style="display:flex;align-items:center;gap:10px;flex:1"><div style="width:36px;height:36px;border-radius:9px;overflow:hidden;flex-shrink:0"><img src="'+icon192+'" style="width:100%;height:100%"/></div><div><div style="font-size:12px;font-weight:700;color:#d8e8f8;font-family:monospace">Install CryptoCalc Pro</div><div style="font-size:10px;color:#6a90b8;font-family:monospace">Akses cepat dari homescreen</div></div></div><div style="display:flex;gap:6px;flex-shrink:0"><button onclick="doInstall()" style="padding:7px 14px;background:linear-gradient(135deg,#00e5a0,#00b377);border:none;border-radius:8px;color:#060c18;font-family:monospace;font-size:11px;font-weight:700;cursor:pointer">Install</button><button onclick="hideInstallBanner()" style="padding:7px 10px;background:#131e30;border:1px solid #1a2d45;border-radius:8px;color:#6a90b8;font-family:monospace;font-size:11px;cursor:pointer">✕</button></div>';
+    b.style.cssText='position:fixed;bottom:90px;left:12px;right:12px;background:#131e30;border:1px solid #00e5a0;border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:8888;box-shadow:0 4px 24px rgba(0,229,160,.15)';
+    document.body.appendChild(b);
+  }
+  window.doInstall=async function(){
+    if(!deferredPrompt)return;
+    deferredPrompt.prompt();
+    const res=await deferredPrompt.userChoice;
+    if(res.outcome==='accepted'){hideInstallBanner();deferredPrompt=null;}
+  };
+  window.hideInstallBanner=function(){const b=document.getElementById('install-banner');if(b)b.remove();};
+
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.navigator.standalone;
+  if(isIOS&&!isStandalone&&!sessionStorage.getItem('ccp-ios')){
+    sessionStorage.setItem('ccp-ios','1');
+    setTimeout(()=>{const t=document.getElementById('toast');if(t){t.textContent='iOS: Tap Share lalu Add to Home Screen untuk install';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}},3500);
+  }
+
+  function updateOnline(){
+    const dot=document.getElementById('online-dot');
+    if(dot)dot.style.background=navigator.onLine?'#00e5a0':'#ff3d5a';
+  }
+  window.addEventListener('online',updateOnline);
+  window.addEventListener('offline',()=>{
+    updateOnline();
+    const t=document.getElementById('toast');if(t){t.textContent='Offline — live price tidak tersedia';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+  });
+  updateOnline();
+})();
+</script>
+</body>
+</html>
